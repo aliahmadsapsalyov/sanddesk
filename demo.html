@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07050b">
+  <meta name="description" content="Prueba Sand Desk: gestiona reparaciones, clientes, inventario, entradas, salidas y tickets.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/demo.css">
+  <title>Demo interactiva — Sand Desk</title>
+</head>
+<body class="app-body">
+  <canvas class="ambient-canvas" id="ambientStars" data-ambient-stars aria-hidden="true"></canvas>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="appSidebar">
+      <a class="app-brand" href="index.html" aria-label="Volver a Sand Desk">
+        <img src="assets/logo-mark.svg" alt="" class="brand-mark">
+        <span>Sand <b>Desk</b></span>
+      </a>
+      <div class="workspace-switch">
+        <div class="workspace-avatar">SD</div>
+        <div><strong>Mi taller demo</strong><small>Espacio de prueba</small></div>
+        <span class="chevron">⌄</span>
+      </div>
+      <div class="side-caption">GENERAL</div>
+      <nav class="app-nav" aria-label="Navegación principal">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-ico">◫</span> Resumen</button>
+        <button class="nav-item" data-view="repairs"><span class="nav-ico">⌁</span> Reparaciones <span class="nav-count" id="navRepairCount">0</span></button>
+        <button class="nav-item" data-view="clients"><span class="nav-ico">♙</span> Clientes</button>
+        <button class="nav-item" data-view="inventory"><span class="nav-ico">▦</span> Inventario</button>
+        <button class="nav-item" data-view="appointments"><span class="nav-ico">▣</span> Citas</button>
+        <div class="side-caption">NEGOCIO</div>
+        <button class="nav-item" data-view="analytics"><span class="nav-ico">▥</span> Analíticas</button>
+        <button class="nav-item" data-view="invoices"><span class="nav-ico">▧</span> Facturación <span class="nav-count" id="navInvoiceCount">0</span></button>
+        <button class="nav-item" data-view="tickets"><span class="nav-ico">▤</span> Tickets</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="demo-tip" id="storageTip"><span class="tip-glow">✦</span><strong>Espacio de trabajo</strong><p id="storageTipText">Los cambios se guardan en este navegador.</p><button id="resetDemo" class="text-button">Restablecer datos ↺</button><button id="cloudSignOut" class="text-button" hidden>Cerrar sesión ↗</button></div>
+        <a class="back-link" href="index.html">← Volver a la web</a>
+        <div class="profile-mini"><div class="profile-avatar">A</div><div><strong>Alex Taller</strong><small>Administrador</small></div><span class="online-dot"></span></div>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu" id="mobileMenu" aria-label="Abrir menú">☰</button>
+          <div class="breadcrumb"><span>Sand Desk</span><i>/</i><strong id="breadcrumbCurrent">Resumen</strong></div>
+        </div>
+        <div class="topbar-right">
+          <span class="demo-badge" id="storageBadge"><i></i> MODO LOCAL</span>
+          <button class="top-icon-btn" id="quickEntryTop" title="Nueva entrada" aria-label="Nueva entrada">＋</button>
+          <div class="top-user"><div class="profile-avatar">A</div><span>Alex Taller</span><b>⌄</b></div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <section class="view active" id="view-dashboard" data-title="Resumen">
+          <div class="page-heading">
+            <div><div class="eyebrow-small">PANEL DE CONTROL</div><h1>Buenos días, Alex <span class="wave">✦</span></h1><p>Este es el resumen de la actividad de tu taller.</p></div>
+            <div class="heading-actions"><button class="btn btn-ghost" id="exportData">↓ Exportar datos</button><button class="btn btn-primary" data-open-modal="repairModal">＋ Nueva entrada</button></div>
+          </div>
+          <div class="kpi-grid" id="dashboardKpis"></div>
+          <div class="dashboard-grid">
+            <article class="glass-panel chart-panel">
+              <div class="panel-heading"><div><h2>Ingresos del taller</h2><p>Facturación registrada en los últimos 6 meses</p></div><span class="period-chip">Últimos 6 meses</span></div>
+              <div class="chart-summary"><strong id="chartTotal">0 €</strong><span class="growth-chip">Actividad registrada</span></div>
+              <div class="chart-bars" id="dashboardChart" aria-label="Gráfico de ingresos"></div>
+            </article>
+            <article class="glass-panel activity-panel">
+              <div class="panel-heading"><div><h2>Actividad reciente</h2><p>Últimos movimientos del taller</p></div><button class="link-button" data-goto="repairs">Ver todas →</button></div>
+              <div id="recentActivity" class="activity-list"></div>
+            </article>
+          </div>
+          <article class="glass-panel table-panel">
+            <div class="panel-heading"><div><h2>Reparaciones recientes</h2><p>Controla el estado de los últimos dispositivos recibidos</p></div><button class="link-button" data-goto="repairs">Ver reparaciones →</button></div>
+            <div class="table-scroll"><table class="data-table"><thead><tr><th>ORDEN</th><th>CLIENTE</th><th>DISPOSITIVO</th><th>ESTADO</th><th>IMPORTE</th><th></th></tr></thead><tbody id="dashboardRepairRows"></tbody></table></div>
+          </article>
+        </section>
+
+        <section class="view" id="view-repairs" data-title="Reparaciones">
+          <div class="page-heading"><div><div class="eyebrow-small">SERVICIO TÉCNICO</div><h1>Reparaciones</h1><p>Gestiona las entradas, el estado y la entrega de cada dispositivo.</p></div><button class="btn btn-primary" data-open-modal="repairModal">＋ Registrar entrada</button></div>
+          <div class="toolbar glass-panel"><div class="searchbox">⌕<input id="repairSearch" type="search" placeholder="Buscar orden, cliente o dispositivo..."></div><select id="repairFilter" class="select-control"><option value="all">Todos los estados</option><option value="Recibido">Recibido</option><option value="En reparación">En reparación</option><option value="Esperando pieza">Esperando pieza</option><option value="Listo para entregar">Listo para entregar</option><option value="Entregado">Entregado</option></select></div>
+          <article class="glass-panel table-panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>ORDEN</th><th>FECHA</th><th>CLIENTE</th><th>DISPOSITIVO</th><th>PROBLEMA</th><th>ESTADO</th><th>PRECIO</th><th>ACCIONES</th></tr></thead><tbody id="repairsRows"></tbody></table></div></article>
+        </section>
+
+        <section class="view" id="view-clients" data-title="Clientes">
+          <div class="page-heading"><div><div class="eyebrow-small">CRM DEL TALLER</div><h1>Clientes</h1><p>Guarda la información y consulta el historial de cada cliente.</p></div><button class="btn btn-primary" data-open-modal="clientModal">＋ Nuevo cliente</button></div>
+          <div class="toolbar glass-panel"><div class="searchbox">⌕<input id="clientSearch" type="search" placeholder="Buscar por nombre, teléfono o correo..."></div><span class="toolbar-meta" id="clientCountLabel">0 clientes</span></div>
+          <article class="glass-panel table-panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>CLIENTE</th><th>TELÉFONO</th><th>EMAIL</th><th>REPARACIONES</th><th>ÚLTIMA ACTIVIDAD</th><th></th></tr></thead><tbody id="clientsRows"></tbody></table></div></article>
+        </section>
+
+        <section class="view" id="view-inventory" data-title="Inventario">
+          <div class="page-heading"><div><div class="eyebrow-small">CONTROL DE STOCK</div><h1>Inventario</h1><p>Controla componentes, accesorios y consumibles de tu tienda.</p></div><button class="btn btn-primary" data-open-modal="productModal">＋ Añadir producto</button></div>
+          <div class="kpi-grid compact-kpis" id="inventoryKpis"></div>
+          <div class="toolbar glass-panel"><div class="searchbox">⌕<input id="inventorySearch" type="search" placeholder="Buscar producto o referencia..."></div><select class="select-control" id="stockFilter"><option value="all">Todo el inventario</option><option value="low">Stock bajo</option><option value="out">Agotado</option></select></div>
+          <article class="glass-panel table-panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>PRODUCTO</th><th>REFERENCIA</th><th>CATEGORÍA</th><th>STOCK</th><th>MÍNIMO</th><th>PRECIO VENTA</th><th>AJUSTAR STOCK</th></tr></thead><tbody id="inventoryRows"></tbody></table></div></article>
+          <article class="glass-panel stock-log"><div class="panel-heading"><div><h2>Últimos movimientos</h2><p>Entradas y salidas de inventario</p></div></div><div id="stockMovements" class="movement-list"></div></article>
+        </section>
+
+        <section class="view" id="view-appointments" data-title="Citas">
+          <div class="page-heading"><div><div class="eyebrow-small">AGENDA</div><h1>Citas</h1><p>Organiza las próximas visitas al taller.</p></div><button class="btn btn-primary" data-open-modal="appointmentModal">＋ Nueva cita</button></div>
+          <article class="glass-panel table-panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>FECHA Y HORA</th><th>CLIENTE</th><th>DISPOSITIVO</th><th>MOTIVO</th><th>ESTADO</th><th></th></tr></thead><tbody id="appointmentsRows"></tbody></table></div></article>
+        </section>
+
+        <section class="view" id="view-analytics" data-title="Analíticas">
+          <div class="page-heading"><div><div class="eyebrow-small">RENDIMIENTO</div><h1>Analíticas</h1><p>Una visión clara de los resultados de tu taller.</p></div><span class="period-chip">Datos de la demo</span></div>
+          <div class="kpi-grid" id="analyticsKpis"></div>
+          <div class="analytics-grid"><article class="glass-panel chart-panel"><div class="panel-heading"><div><h2>Ingresos por mes</h2><p>Según las reparaciones entregadas y cobradas</p></div></div><div class="chart-summary"><strong id="analyticsTotal">0 €</strong></div><div class="chart-bars tall-chart" id="analyticsChart"></div></article><article class="glass-panel chart-panel"><div class="panel-heading"><div><h2>Estado de reparaciones</h2><p>Distribución actual de órdenes</p></div></div><div id="statusBreakdown" class="status-breakdown"></div></article></div>
+          <article class="glass-panel table-panel"><div class="panel-heading"><div><h2>Clientes destacados</h2><p>Clientes con mayor número de reparaciones registradas</p></div></div><div class="table-scroll"><table class="data-table"><thead><tr><th>CLIENTE</th><th>REPARACIONES</th><th>IMPORTE ACUMULADO</th></tr></thead><tbody id="topClientsRows"></tbody></table></div></article>
+        </section>
+
+        <section class="view" id="view-invoices" data-title="Facturación">
+          <div class="page-heading">
+            <div><div class="eyebrow-small">FACTURAS DE VENTA · DEMO</div><h1>Facturación</h1><p>Tu taller emite la factura. Aquí guardas las empresas y personas a las que vendes.</p></div>
+            <div class="heading-actions"><button class="btn btn-ghost" data-open-modal="issuerModal">⚙ Datos de mi empresa</button><button class="btn btn-ghost" data-open-modal="companyModal">＋ Crear empresa cliente</button><button class="btn btn-primary" data-action="new-invoice">＋ Crear factura</button></div>
+          </div>
+          <div class="invoice-kpis kpi-grid" id="invoiceKpis"></div>
+          <article class="glass-panel invoice-companies-panel issuer-profile-panel">
+            <div class="panel-heading"><div><h2>Mi empresa · Emisor A</h2><p>Estos son los datos de TU taller y aparecerán como emisor en todas las facturas.</p></div><button class="link-button" data-open-modal="issuerModal">Editar datos del emisor →</button></div>
+            <div id="invoiceIssuerProfile"></div>
+          </article>
+          <article class="glass-panel invoice-companies-panel">
+            <div class="panel-heading"><div><h2>Empresas cliente · Destinatarios B</h2><p>Guarda los datos fiscales de tus clientes empresa para seleccionarlos al facturarles.</p></div><button class="link-button" data-open-modal="companyModal">Añadir empresa cliente +</button></div>
+            <div class="invoice-company-grid" id="invoiceCompanies"></div>
+          </article>
+          <article class="glass-panel table-panel invoice-list-panel">
+            <div class="panel-heading"><div><h2>Facturas de venta registradas</h2><p>Tu taller como emisor y la empresa cliente como destinataria.</p></div><div class="toolbar-meta" id="invoiceCountLabel">0 facturas</div></div>
+            <div class="table-scroll"><table class="data-table"><thead><tr><th>NÚMERO</th><th>FECHA</th><th>EMISOR</th><th>CLIENTE / DESTINATARIO</th><th>REPARACIÓN</th><th>BASE IMPONIBLE</th><th>IVA</th><th>TOTAL</th><th></th></tr></thead><tbody id="invoicesRows"></tbody></table></div>
+          </article>
+          <div class="invoice-legal-note"><span>ⓘ</span><div><strong>Importante: módulo de demostración</strong><p>Calcula impuestos y genera una vista imprimible, pero todavía no está adaptado ni certificado como sistema informático de facturación conforme a Veri*Factu/RRSIF. No uses estos documentos como facturas oficiales.</p></div></div>
+        </section>
+
+        <section class="view" id="view-tickets" data-title="Tickets">
+          <div class="page-heading"><div><div class="eyebrow-small">DOCUMENTOS</div><h1>Tickets de reparación</h1><p>Imprime un comprobante de recepción o de entrega para cada dispositivo.</p></div></div>
+          <article class="glass-panel table-panel"><div class="table-scroll"><table class="data-table"><thead><tr><th>ORDEN</th><th>FECHA</th><th>CLIENTE</th><th>DISPOSITIVO</th><th>TIPO</th><th></th></tr></thead><tbody id="ticketsRows"></tbody></table></div></article>
+          <p class="info-note">Los tickets de esta demo son comprobantes de servicio no fiscales. Para emitir facturas oficiales habría que integrar un sistema de facturación adecuado.</p>
+        </section>
+      </div>
+      <footer class="app-footer"><span>✦ Sand Desk <small>· Entorno de demostración</small></span><a href="mailto:kisakiofficial@proton.me">Ayuda y contacto ↗</a></footer>
+    </main>
+  </div>
+  <div class="sidebar-scrim" id="sidebarScrim"></div>
+
+  <!-- Customer company modal: recipient B -->
+  <div class="modal-backdrop" id="companyModal" aria-hidden="true"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="companyModalTitle"><header class="modal-header"><div><span class="eyebrow-small">EMPRESA CLIENTE · DESTINATARIO</span><h2 id="companyModalTitle">Crear empresa cliente</h2><p>Introduce los datos de la empresa a la que tu taller venderá y emitirá la factura.</p></div><button class="modal-close" data-close-modal aria-label="Cerrar">×</button></header>
+    <form id="companyForm" class="form-grid">
+      <label class="field full"><span>Razón social / nombre de empresa *</span><input name="legalName" required placeholder="Ej. Empresa B, S.L."></label>
+      <label class="field"><span>NIF / CIF *</span><input name="taxId" required placeholder="B12345678" autocomplete="off"></label>
+      <label class="field"><span>Teléfono de contacto</span><input name="phone" type="tel" placeholder="900 000 000"></label>
+      <label class="field"><span>Calle *</span><input name="street" required placeholder="Carrer Major"></label>
+      <label class="field"><span>Número, piso, puerta *</span><input name="streetNumber" required placeholder="12, local 2"></label>
+      <label class="field"><span>Código postal *</span><input name="postalCode" required inputmode="numeric" placeholder="25180"></label>
+      <label class="field"><span>Municipio *</span><input name="city" required placeholder="Alcarràs"></label>
+      <label class="field"><span>Provincia *</span><input name="province" required placeholder="Lleida"></label>
+      <label class="field"><span>País</span><input name="country" value="España" required></label>
+      <label class="field full"><span>Correo electrónico</span><input name="email" type="email" placeholder="administracion@empresa.es"></label>
+      <div class="form-footer full"><span class="form-hint">Esta empresa aparecerá como destinataria (B), nunca como emisora.</span><button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Guardar empresa cliente</button></div>
+    </form>
+  </section></div>
+
+  <!-- Issuer A modal: the logged-in workshop -->
+  <div class="modal-backdrop" id="issuerModal" aria-hidden="true"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="issuerModalTitle"><header class="modal-header"><div><span class="eyebrow-small">DATOS FISCALES DE TU TALLER · EMISOR A</span><h2 id="issuerModalTitle">Mi empresa emisora</h2><p>Estos datos identifican a tu negocio como vendedor en las facturas.</p></div><button class="modal-close" data-close-modal aria-label="Cerrar">×</button></header>
+    <form id="issuerForm" class="form-grid">
+      <label class="field full"><span>Razón social / nombre y apellidos *</span><input name="legalName" required placeholder="Ej. Mi Taller, S.L."></label>
+      <label class="field"><span>NIF / CIF *</span><input name="taxId" required placeholder="B12345678" autocomplete="off"></label>
+      <label class="field"><span>Teléfono *</span><input name="phone" type="tel" required placeholder="900 000 000"></label>
+      <label class="field"><span>Calle *</span><input name="street" required placeholder="Carrer Major"></label>
+      <label class="field"><span>Número, piso, puerta *</span><input name="streetNumber" required placeholder="12, local 2"></label>
+      <label class="field"><span>Código postal *</span><input name="postalCode" required inputmode="numeric" placeholder="25180"></label>
+      <label class="field"><span>Municipio *</span><input name="city" required placeholder="Alcarràs"></label>
+      <label class="field"><span>Provincia *</span><input name="province" required placeholder="Lleida"></label>
+      <label class="field"><span>País</span><input name="country" value="España" required></label>
+      <label class="field full"><span>Correo electrónico</span><input name="email" type="email" placeholder="facturacion@mitaller.es"></label>
+      <div class="form-footer full"><span class="form-hint">Es el único perfil emisor de este espacio de taller.</span><button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Guardar mi empresa</button></div>
+    </form>
+  </section></div>
+
+  <!-- Create invoice modal: A sells to B -->
+  <div class="modal-backdrop" id="invoiceModal" aria-hidden="true"><section class="modal-card invoice-modal" role="dialog" aria-modal="true" aria-labelledby="invoiceModalTitle"><header class="modal-header"><div><span class="eyebrow-small">FACTURA DE VENTA · DEMO</span><h2 id="invoiceModalTitle">Crear factura</h2><p>Tu taller será el emisor (A). Selecciona la empresa cliente (B) y la reparación.</p></div><button class="modal-close" data-close-modal aria-label="Cerrar">×</button></header>
+    <form id="invoiceForm" class="form-grid">
+      <div class="invoice-form-divider full">Emisor · Tu taller (A)</div>
+      <div class="invoice-issuer-preview full" id="invoiceIssuerPreview"><span class="preview-icon">A</span><div><strong>Configura los datos de tu empresa</strong><small>Tu taller aparecerá como emisor de la factura.</small></div></div>
+      <div class="invoice-form-divider full">Destinatario · Empresa cliente (B)</div>
+      <label class="field full"><span>Seleccionar empresa cliente *</span><div class="inline-field"><select id="invoiceCompany" name="recipientCompanyId" required></select><button type="button" class="btn btn-ghost btn-small" data-open-modal="companyModal">＋ Crear empresa</button></div></label>
+      <div class="recipient-preview full" id="invoiceRecipientPreview"><strong>Datos del destinatario</strong><span>Selecciona una empresa cliente para cargar su NIF y domicilio fiscal.</span></div>
+      <div class="invoice-form-divider full">Reparación y fechas</div>
+      <label class="field full"><span>Seleccionar reparación *</span><select id="invoiceRepair" name="repairId" required></select></label>
+      <label class="field"><span>Fecha de expedición *</span><input id="invoiceIssueDate" name="issueDate" type="date" required></label>
+      <label class="field"><span>Fecha de operación *</span><input id="invoiceOperationDate" name="operationDate" type="date" required></label>
+      <div class="invoice-form-divider full">Detalle e impuestos</div>
+      <label class="field full"><span>Descripción del servicio *</span><textarea id="invoiceDescription" name="description" rows="2" required placeholder="Servicio de reparación realizado..."></textarea></label>
+      <label class="field"><span>Importe de la reparación (€) *</span><input id="invoiceAmount" name="amount" type="number" min="0.01" step="0.01" required></label>
+      <label class="field"><span>Tipo de IVA *</span><select id="invoiceVatRate" name="vatRate"><option value="21">21 %</option><option value="10">10 %</option><option value="4">4 %</option><option value="0">0 % / exento (revisar)</option></select></label>
+      <label class="field full"><span>El importe introducido...</span><select id="invoicePriceMode" name="priceMode"><option value="included">Ya incluye IVA (precio final)</option><option value="excluded">Es base imponible (añadir IVA)</option></select></label>
+      <div class="invoice-totals full" id="invoiceTotalsPreview">
+        <div><span>Base imponible</span><strong id="invoicePreviewBase">0,00 €</strong></div>
+        <div><span>IVA (<b id="invoicePreviewRate">21</b> %)</span><strong id="invoicePreviewTax">0,00 €</strong></div>
+        <div class="invoice-grand-total"><span>Total factura</span><strong id="invoicePreviewTotal">0,00 €</strong></div>
+      </div>
+      <div class="invoice-demo-warning full">Esta vista es una simulación: la numeración y el cálculo son demostrativos. No se genera registro fiscal, huella, QR ni envío a la AEAT.</div>
+      <div class="form-footer full"><span class="form-hint">Al guardarla se conservará una copia de los datos de A y B.</span><button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Crear y guardar factura</button></div>
+    </form>
+  </section></div>
+
+  <!-- Repair intake modal -->
+  <div class="modal-backdrop" id="repairModal" aria-hidden="true"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="repairModalTitle"><header class="modal-header"><div><span class="eyebrow-small">RECEPCIÓN DE DISPOSITIVO</span><h2 id="repairModalTitle">Registrar entrada</h2><p>Crea una orden de reparación y genera su ticket.</p></div><button class="modal-close" data-close-modal aria-label="Cerrar">×</button></header>
+    <form id="repairForm" class="form-grid">
+      <label class="field full"><span>Cliente *</span><div class="inline-field"><select id="repairClient" name="clientId" required></select><button type="button" class="btn btn-ghost btn-small" data-open-modal="clientModal">＋ Crear</button></div></label>
+      <label class="field"><span>Marca *</span><select name="brand" required><option value="Apple">Apple</option><option value="Samsung">Samsung</option><option value="Xiaomi">Xiaomi</option><option value="Google">Google</option><option value="Huawei">Huawei</option><option value="Motorola">Motorola</option><option value="Otra">Otra</option></select></label>
+      <label class="field"><span>Modelo *</span><input name="model" placeholder="Ej. iPhone 14 Pro" required></label>
+      <label class="field full"><span>Problema / reparación solicitada *</span><input name="issue" placeholder="Ej. Cambio de pantalla, no carga..." required></label>
+      <label class="field"><span>Estado inicial</span><select name="status"><option>Recibido</option><option>En reparación</option><option>Esperando pieza</option></select></label>
+      <label class="field"><span>Presupuesto (€)</span><input name="price" type="number" min="0" step="0.01" placeholder="0.00"></label>
+      <label class="field"><span>Anticipo (€)</span><input name="deposit" type="number" min="0" step="0.01" value="0"></label>
+      <label class="field"><span>Accesorios recibidos</span><input name="accessories" placeholder="Funda, cargador, SIM..."></label>
+      <label class="field full"><span>Observaciones / estado físico</span><textarea name="notes" rows="3" placeholder="Arañazos, golpes, contraseña pendiente... "></textarea></label>
+      <div class="form-footer full"><span class="form-hint">Se guardará en este navegador.</span><button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Guardar entrada</button></div>
+    </form>
+  </section></div>
+
+  <!-- New client modal -->
+  <div class="modal-backdrop" id="clientModal" aria-hidden="true"><section class="modal-card modal-small" role="dialog" aria-modal="true" aria-labelledby="clientModalTitle"><header class="modal-header"><div><span class="eyebrow-small">AGENDA DE CLIENTES</span><h2 id="clientModalTitle">Nuevo cliente</h2><p>Añade sus datos de contacto.</p></div><button class="modal-close" data-close-modal aria-label="Cerrar">×</button></header>
+    <form id="clientForm" class="form-grid"><label class="field full"><span>Nombre completo / razón social *</span><input name="name" required placeholder="Nombre y apellidos"></label><label class="field"><span>Teléfono *</span><input name="phone" type="tel" required placeholder="600 000 000"></label><label class="field"><span>Email</span><input name="email" type="email" placeholder="cliente@email.com"></label><label class="field"><span>NIF / CIF</span><input name="taxId" placeholder="12345678Z"></label><label class="field"><span>Código postal</span><input name="postalCode" placeholder="25001"></label><label class="field full"><span>Dirección fiscal</span><input name="address" placeholder="Calle, número, piso"></label><label class="field"><span>Municipio</span><input name="city" placeholder="Lleida"></label><label class="field"><span>Provincia</span><input name="province" placeholder="Lleida"></label><label class="field full"><span>Notas</span><textarea name="notes" rows="2" placeholder="Preferencias u observaciones"></textarea></label><div class="form-footer full"><button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Guardar cliente</button></div></form>
+  </section></div>
+
+  <!-- Product modal -->
+  <div class="modal-backdrop" id="productModal" aria-hidden="true"><section class="modal-card modal-small" role="dialog" aria-modal="true" aria-labelledby="productModalTitle"><header class="modal-header"><div><span class="eyebrow-small">ALMACÉN</span><h2 id="productModalTitle">Añadir producto</h2><p>Registra un componente o accesorio.</p></div><button class="modal-close" data-close-modal aria-label="Cerrar">×</button></header>
+    <form id="productForm" class="form-grid"><label class="field full"><span>Nombre del producto *</span><input name="name" required placeholder="Ej. Pantalla iPhone 13"></label><label class="field"><span>Referencia / SKU</span><input name="sku" placeholder="LCD-IP13"></label><label class="field"><span>Categoría</span><select name="category"><option>Pantallas</option><option>Baterías</option><option>Conectores</option><option>Accesorios</option><option>Herramientas</option><option>Otros</option></select></label><label class="field"><span>Unidades iniciales</span><input name="stock" type="number" min="0" value="0"></label><label class="field"><span>Stock mínimo</span><input name="minimum" type="number" min="0" value="2"></label><label class="field"><span>Coste (€)</span><input name="cost" type="number" min="0" step="0.01" value="0"></label><label class="field"><span>Precio venta (€)</span><input name="price" type="number" min="0" step="0.01" value="0"></label><div class="form-footer full"><button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Añadir producto</button></div></form>
+  </section></div>
+
+  <!-- Appointment modal -->
+  <div class="modal-backdrop" id="appointmentModal" aria-hidden="true"><section class="modal-card modal-small" role="dialog" aria-modal="true" aria-labelledby="appointmentModalTitle"><header class="modal-header"><div><span class="eyebrow-small">AGENDA DEL TALLER</span><h2 id="appointmentModalTitle">Nueva cita</h2><p>Reserva una visita de un cliente.</p></div><button class="modal-close" data-close-modal aria-label="Cerrar">×</button></header>
+    <form id="appointmentForm" class="form-grid"><label class="field full"><span>Cliente *</span><select name="clientId" id="appointmentClient" required></select></label><label class="field"><span>Fecha *</span><input name="date" type="date" required></label><label class="field"><span>Hora *</span><input name="time" type="time" required value="10:00"></label><label class="field full"><span>Dispositivo</span><input name="device" placeholder="Ej. Samsung S22"></label><label class="field full"><span>Motivo de la visita</span><input name="reason" placeholder="Ej. Diagnóstico de carga"></label><div class="form-footer full"><button type="button" class="btn btn-ghost" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Guardar cita</button></div></form>
+  </section></div>
+
+  <!-- Repair detail modal -->
+  <div class="modal-backdrop" id="detailModal" aria-hidden="true"><section class="modal-card modal-small" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><header class="modal-header"><div><span class="eyebrow-small" id="detailEyebrow">ORDEN DE REPARACIÓN</span><h2 id="detailTitle">Detalle de reparación</h2><p id="detailSubtitle"></p></div><button class="modal-close" data-close-modal aria-label="Cerrar">×</button></header><div id="detailContent" class="detail-content"></div><div class="form-footer detail-actions"><button class="btn btn-ghost" id="detailPrint">Imprimir ticket</button><button class="btn btn-ghost" data-close-modal>Cerrar</button><button class="btn btn-primary" id="detailDeliver">Registrar salida</button></div></section></div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+
+  <div class="auth-gate" id="authGate" hidden>
+    <section class="auth-card" aria-labelledby="authTitle">
+      <a class="auth-brand" href="index.html"><img src="assets/logo-mark.svg" alt=""><span>Sand <b>Desk</b></span></a>
+      <span class="eyebrow-small">ESPACIO PRIVADO DEL TALLER</span>
+      <h1 id="authTitle">Accede a tu taller</h1>
+      <p id="authDescription">Inicia sesión para cargar tus clientes, reparaciones, inventario y facturas desde la nube.</p>
+      <form id="cloudAuthForm" class="auth-form">
+        <label class="field" id="authBusinessField" hidden><span>Nombre del taller</span><input name="businessName" autocomplete="organization" placeholder="Mi taller"></label>
+        <label class="field"><span>Correo electrónico</span><input name="email" type="email" required autocomplete="email" placeholder="tu@empresa.es"></label>
+        <label class="field"><span>Contraseña</span><input name="password" type="password" required minlength="8" autocomplete="current-password" placeholder="Mínimo 8 caracteres"></label>
+        <button class="btn btn-primary auth-submit" id="authSubmit" type="submit">Iniciar sesión</button>
+      </form>
+      <p class="auth-message" id="authMessage" role="status"></p>
+      <button class="auth-switch" id="authSwitch" type="button">¿Primera vez? Crear cuenta del taller</button>
+      <small class="auth-footnote">Tus datos quedan aislados por cuenta. No compartas tu contraseña.</small>
+    </section>
+  </div>
+
+  <script src="js/ambient.js" defer></script>
+  <script src="js/supabase-config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/demo.js" defer></script>
+</body>
+</html>
