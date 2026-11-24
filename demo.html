@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="css/demo.css"><link rel="stylesheet" href="css/analytics-month.css">
   <title>Demo interactiva — Sand Desk</title>
 </head>
 <body class="app-body">
@@ -40,7 +40,7 @@
       <div class="sidebar-bottom">
         <div class="demo-tip" id="storageTip"><span class="tip-glow">✦</span><strong>Espacio de trabajo</strong><p id="storageTipText">Los cambios se guardan en este navegador.</p><button id="resetDemo" class="text-button">Restablecer datos ↺</button><button id="cloudSignOut" class="text-button" hidden>Cerrar sesión ↗</button></div>
         <a class="back-link" href="index.html">← Volver a la web</a>
-        <div class="profile-mini"><div class="profile-avatar">A</div><div><strong>Alex Taller</strong><small>Administrador</small></div><span class="online-dot"></span></div>
+        <div class="profile-mini"><div class="profile-avatar">A</div><div><strong>Admin</strong><small>Administrador</small></div><span class="online-dot"></span></div>
       </div>
     </aside>
 
@@ -53,14 +53,14 @@
         <div class="topbar-right">
           <span class="demo-badge" id="storageBadge"><i></i> MODO LOCAL</span>
           <button class="top-icon-btn" id="quickEntryTop" title="Nueva entrada" aria-label="Nueva entrada">＋</button>
-          <div class="top-user"><div class="profile-avatar">A</div><span>Alex Taller</span><b>⌄</b></div>
+          <div class="top-user"><div class="profile-avatar">A</div><span>Admin</span><b>⌄</b></div>
         </div>
       </header>
 
       <div class="page-content">
         <section class="view active" id="view-dashboard" data-title="Resumen">
           <div class="page-heading">
-            <div><div class="eyebrow-small">PANEL DE CONTROL</div><h1>Buenos días, Alex <span class="wave">✦</span></h1><p>Este es el resumen de la actividad de tu taller.</p></div>
+            <div><div class="eyebrow-small">PANEL DE CONTROL</div><h1>Buenos días, Admin <span class="wave">✦</span></h1><p>Este es el resumen de la actividad de tu taller.</p></div>
             <div class="heading-actions"><button class="btn btn-ghost" id="exportData">↓ Exportar datos</button><button class="btn btn-primary" data-open-modal="repairModal">＋ Nueva entrada</button></div>
           </div>
           <div class="kpi-grid" id="dashboardKpis"></div>
@@ -107,10 +107,10 @@
         </section>
 
         <section class="view" id="view-analytics" data-title="Analíticas">
-          <div class="page-heading"><div><div class="eyebrow-small">RENDIMIENTO</div><h1>Analíticas</h1><p>Una visión clara de los resultados de tu taller.</p></div><span class="period-chip">Datos de la demo</span></div>
+          <div class="page-heading"><div><div class="eyebrow-small">RENDIMIENTO</div><h1>Analíticas</h1><p>Una visión clara de los resultados de tu taller.</p></div><div class="month-switch"><button type="button" id="analyticsPrev" aria-label="Mes anterior">‹</button><strong id="analyticsMonthLabel">Mes actual</strong><button type="button" id="analyticsNext" aria-label="Mes siguiente">›</button></div></div>
           <div class="kpi-grid" id="analyticsKpis"></div>
           <div class="analytics-grid"><article class="glass-panel chart-panel"><div class="panel-heading"><div><h2>Ingresos por mes</h2><p>Según las reparaciones entregadas y cobradas</p></div></div><div class="chart-summary"><strong id="analyticsTotal">0 €</strong></div><div class="chart-bars tall-chart" id="analyticsChart"></div></article><article class="glass-panel chart-panel"><div class="panel-heading"><div><h2>Estado de reparaciones</h2><p>Distribución actual de órdenes</p></div></div><div id="statusBreakdown" class="status-breakdown"></div></article></div>
-          <article class="glass-panel table-panel"><div class="panel-heading"><div><h2>Clientes destacados</h2><p>Clientes con mayor número de reparaciones registradas</p></div></div><div class="table-scroll"><table class="data-table"><thead><tr><th>CLIENTE</th><th>REPARACIONES</th><th>IMPORTE ACUMULADO</th></tr></thead><tbody id="topClientsRows"></tbody></table></div></article>
+          <div class="analytics-grid brand-analytics-grid"><article class="glass-panel chart-panel"><div class="panel-heading"><div><h2>Marcas más reparadas</h2><p>Distribución de reparaciones del mes seleccionado</p></div></div><div class="brand-donut-wrap"><div id="brandDonut" class="brand-donut"><strong id="brandDonutTotal">0</strong><small>reparaciones</small></div><div id="brandLegend" class="brand-legend"></div></div></article><article class="glass-panel chart-panel"><div class="panel-heading"><div><h2>Resumen del mes</h2><p>Actividad según la fecha de entrada</p></div></div><div id="monthSummary" class="month-summary"></div></article></div><article class="glass-panel table-panel"><div class="panel-heading"><div><h2>Clientes destacados</h2><p>Clientes con mayor número de reparaciones registradas</p></div></div><div class="table-scroll"><table class="data-table"><thead><tr><th>CLIENTE</th><th>REPARACIONES</th><th>IMPORTE ACUMULADO</th></tr></thead><tbody id="topClientsRows"></tbody></table></div></article>
         </section>
 
         <section class="view" id="view-invoices" data-title="Facturación">

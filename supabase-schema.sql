@@ -1,47 +1,355 @@
--- Sand Desk: persistencia cloud por cuenta de taller (Supabase Postgres)
--- Ejecuta todo este archivo en Supabase > SQL Editor.
--- Cada cuenta autenticada solo puede leer/escribir su propia fila.
+-- SAND DESK · Esquema SaaS inicial (base limpia)
+-- Ejecutar completo en Supabase > SQL Editor.
+-- Una cuenta Auth = un taller. No inserta clientes, reparaciones ni datos demo.
 
-create table if not exists public.sanddesk_workspace_data (
-  user_id uuid primary key references auth.users(id) on delete cascade,
-  data jsonb not null default jsonb_build_object(
-    'clients', '[]'::jsonb,
-    'repairs', '[]'::jsonb,
-    'inventory', '[]'::jsonb,
-    'appointments', '[]'::jsonb,
-    'movements', '[]'::jsonb,
-    'companies', '[]'::jsonb,
-    'issuerProfile', 'null'::jsonb,
-    'invoices', '[]'::jsonb
-  ),
+create extension if not exists pgcrypto;
+create extension if not exists pg_trgm;
+
+-- 1) Talleres y perfil fiscal emisor (empresa A)
+create table if not exists public.workshops (
+  id uuid primary key default gen_random_uuid(),
+  owner_user_id uuid not null unique references auth.users(id) on delete cascade,
+  name text not null,
+  created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
-alter table public.sanddesk_workspace_data enable row level security;
+create table if not exists public.issuer_profiles (
+  workshop_id uuid primary key references public.workshops(id) on delete cascade,
+  legal_name text not null,
+  tax_id text not null,
+  street text not null,
+  street_number text,
+  postal_code text,
+  city text,
+  province text,
+  country text not null default 'España',
+  phone text,
+  email text,
+  updated_at timestamptz not null default now()
+);
 
-grant select, insert, update, delete on public.sanddesk_workspace_data to authenticated;
+-- Una cuenta por taller: el taller se crea automáticamente al registrarse en Auth.
+create or replace function public.handle_new_sanddesk_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare v_name text;
+begin
+  v_name := coalesce(nullif(trim(new.raw_user_meta_data->>'business_name'), ''), split_part(new.email, '@', 1), 'Mi taller');
+  insert into public.workshops(owner_user_id, name) values (new.id, v_name)
+  on conflict (owner_user_id) do nothing;
+  return new;
+end;
+$$;
 
-drop policy if exists "Taller: leer su propio espacio" on public.sanddesk_workspace_data;
-drop policy if exists "Taller: crear su propio espacio" on public.sanddesk_workspace_data;
-drop policy if exists "Taller: actualizar su propio espacio" on public.sanddesk_workspace_data;
-drop policy if exists "Taller: borrar su propio espacio" on public.sanddesk_workspace_data;
+drop trigger if exists on_auth_user_created_sanddesk on auth.users;
+create trigger on_auth_user_created_sanddesk
+after insert on auth.users
+for each row execute procedure public.handle_new_sanddesk_user();
 
-create policy "Taller: leer su propio espacio"
-  on public.sanddesk_workspace_data for select to authenticated
-  using ((select auth.uid()) = user_id);
+-- Devuelve el taller asociado al usuario autenticado. No acepta IDs del navegador.
+create or replace function public.current_workshop_id()
+returns uuid
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select id from public.workshops where owner_user_id = auth.uid() limit 1;
+$$;
+revoke all on function public.current_workshop_id() from public;
+grant execute on function public.current_workshop_id() to authenticated;
 
-create policy "Taller: crear su propio espacio"
-  on public.sanddesk_workspace_data for insert to authenticated
-  with check ((select auth.uid()) = user_id);
+-- 2) Clientes
+create table if not exists public.customers (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  name text not null,
+  phone text not null,
+  email text,
+  tax_id text,
+  address text,
+  postal_code text,
+  city text,
+  province text,
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  search_text text generated always as (lower(concat_ws(' ', name, phone, email, tax_id))) stored,
+  unique(workshop_id, id)
+);
+create index if not exists customers_workshop_created_idx on public.customers(workshop_id, created_at desc);
+create index if not exists customers_search_idx on public.customers using gin (search_text gin_trgm_ops);
 
-create policy "Taller: actualizar su propio espacio"
-  on public.sanddesk_workspace_data for update to authenticated
-  using ((select auth.uid()) = user_id)
-  with check ((select auth.uid()) = user_id);
+-- 3) Órdenes de reparación. repair_number es el número visible del ticket/orden.
+create table if not exists public.repairs (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  repair_number bigint generated by default as identity,
+  customer_id uuid not null,
+  brand text not null,
+  model text not null,
+  imei text,
+  serial_number text,
+  issue text not null,
+  status text not null default 'Recibido' check (status in ('Recibido','En diagnóstico','Esperando pieza','En reparación','Listo para entregar','Entregado','Cancelado')),
+  price numeric(12,2) not null default 0 check (price >= 0),
+  deposit numeric(12,2) not null default 0 check (deposit >= 0),
+  paid numeric(12,2) not null default 0 check (paid >= 0),
+  accessories text,
+  notes text,
+  received_at timestamptz not null default now(),
+  delivered_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  search_text text generated always as (lower(concat_ws(' ', repair_number::text, brand, model, imei, serial_number, issue))) stored,
+  unique(workshop_id, repair_number),
+  unique(workshop_id, id),
+  foreign key(workshop_id, customer_id) references public.customers(workshop_id, id) on delete restrict
+);
+create index if not exists repairs_workshop_created_idx on public.repairs(workshop_id, created_at desc);
+create index if not exists repairs_workshop_status_idx on public.repairs(workshop_id, status, created_at desc);
+create index if not exists repairs_customer_idx on public.repairs(workshop_id, customer_id, created_at desc);
+create index if not exists repairs_search_idx on public.repairs using gin(search_text gin_trgm_ops);
 
-create policy "Taller: borrar su propio espacio"
-  on public.sanddesk_workspace_data for delete to authenticated
-  using ((select auth.uid()) = user_id);
+-- 4) Empresas destinatarias B y facturas emitidas por el taller A.
+create table if not exists public.recipient_companies (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  legal_name text not null,
+  tax_id text not null,
+  street text not null,
+  street_number text,
+  postal_code text,
+  city text,
+  province text,
+  country text not null default 'España',
+  phone text,
+  email text,
+  created_at timestamptz not null default now(),
+  unique(workshop_id, id)
+);
+create index if not exists recipient_companies_workshop_idx on public.recipient_companies(workshop_id, legal_name);
 
-create index if not exists sanddesk_workspace_updated_at_idx
-  on public.sanddesk_workspace_data (updated_at desc);
+create table if not exists public.invoice_counters (
+  workshop_id uuid not null references public.workshops(id) on delete cascade,
+  fiscal_year integer not null,
+  last_number bigint not null default 0,
+  primary key(workshop_id, fiscal_year)
+);
+
+create table if not exists public.invoices (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  invoice_number text not null,
+  fiscal_year integer not null,
+  recipient_company_id uuid,
+  repair_id uuid,
+  issuer_snapshot jsonb not null,
+  recipient_snapshot jsonb not null,
+  issue_date date not null,
+  operation_date date,
+  description text not null,
+  vat_rate numeric(5,2) not null,
+  taxable_base numeric(12,2) not null,
+  vat_amount numeric(12,2) not null,
+  total numeric(12,2) not null,
+  status text not null default 'draft' check(status in ('draft','issued','void')),
+  created_at timestamptz not null default now(),
+  unique(workshop_id, invoice_number),
+  unique(workshop_id, id),
+  foreign key(workshop_id, recipient_company_id) references public.recipient_companies(workshop_id, id) on delete set null (recipient_company_id),
+  foreign key(workshop_id, repair_id) references public.repairs(workshop_id, id) on delete set null (repair_id)
+);
+create index if not exists invoices_workshop_date_idx on public.invoices(workshop_id, issue_date desc);
+create index if not exists invoices_workshop_recipient_idx on public.invoices(workshop_id, recipient_company_id, issue_date desc);
+
+create table if not exists public.invoice_lines (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  invoice_id uuid not null,
+  description text not null,
+  quantity numeric(12,3) not null default 1 check(quantity > 0),
+  unit_price numeric(12,2) not null check(unit_price >= 0),
+  vat_rate numeric(5,2) not null,
+  line_base numeric(12,2) not null,
+  line_vat numeric(12,2) not null,
+  line_total numeric(12,2) not null,
+  foreign key(workshop_id, invoice_id) references public.invoices(workshop_id, id) on delete cascade
+);
+create index if not exists invoice_lines_invoice_idx on public.invoice_lines(workshop_id, invoice_id);
+
+-- Reserva correlativa atómica por taller y año. El RPC no confía en un workshop_id ajeno.
+create or replace function public.next_invoice_number(p_fiscal_year integer)
+returns text
+language plpgsql
+security invoker
+set search_path = public
+as $$
+declare v_workshop uuid; v_next bigint;
+begin
+  v_workshop := public.current_workshop_id();
+  if v_workshop is null then raise exception 'No hay un taller asociado a esta cuenta'; end if;
+  insert into public.invoice_counters(workshop_id, fiscal_year, last_number)
+  values (v_workshop, p_fiscal_year, 1)
+  on conflict (workshop_id, fiscal_year)
+  do update set last_number = public.invoice_counters.last_number + 1
+  returning last_number into v_next;
+  return 'SD-' || p_fiscal_year::text || '-' || lpad(v_next::text, 6, '0');
+end;
+$$;
+
+-- 5) Inventario y movimientos de stock
+create table if not exists public.inventory_items (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  name text not null,
+  sku text,
+  category text,
+  stock integer not null default 0 check(stock >= 0),
+  minimum_stock integer not null default 0 check(minimum_stock >= 0),
+  cost numeric(12,2) not null default 0,
+  sale_price numeric(12,2) not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique(workshop_id, id),
+  unique(workshop_id, sku)
+);
+create index if not exists inventory_workshop_name_idx on public.inventory_items(workshop_id, name);
+
+create table if not exists public.stock_movements (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  inventory_item_id uuid not null,
+  quantity_delta integer not null check(quantity_delta <> 0),
+  note text,
+  created_at timestamptz not null default now(),
+  foreign key(workshop_id, inventory_item_id) references public.inventory_items(workshop_id, id) on delete restrict
+);
+create index if not exists stock_movements_item_date_idx on public.stock_movements(workshop_id, inventory_item_id, created_at desc);
+
+-- Operación atómica de stock: registra movimiento y actualiza existencias en una transacción.
+create or replace function public.record_stock_movement(p_item_id uuid, p_quantity_delta integer, p_note text default null)
+returns public.inventory_items
+language plpgsql
+security invoker
+set search_path = public
+as $$
+declare v_item public.inventory_items;
+begin
+  if p_quantity_delta = 0 then raise exception 'La cantidad no puede ser cero'; end if;
+  update public.inventory_items
+    set stock = stock + p_quantity_delta, updated_at = now()
+    where id = p_item_id and workshop_id = public.current_workshop_id()
+      and stock + p_quantity_delta >= 0
+    returning * into v_item;
+  if not found then raise exception 'Producto inexistente o stock insuficiente'; end if;
+  insert into public.stock_movements(workshop_id, inventory_item_id, quantity_delta, note)
+  values (public.current_workshop_id(), p_item_id, p_quantity_delta, p_note);
+  return v_item;
+end;
+$$;
+
+-- 6) Citas, tickets y auditoría
+create table if not exists public.appointments (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  customer_id uuid,
+  starts_at timestamptz not null,
+  device text,
+  reason text,
+  status text not null default 'pending' check(status in ('pending','confirmed','completed','cancelled')),
+  created_at timestamptz not null default now(),
+  foreign key(workshop_id, customer_id) references public.customers(workshop_id, id) on delete set null (customer_id)
+);
+create index if not exists appointments_workshop_date_idx on public.appointments(workshop_id, starts_at);
+
+create table if not exists public.tickets (
+  id uuid primary key default gen_random_uuid(),
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  repair_id uuid not null,
+  ticket_type text not null check(ticket_type in ('intake','delivery')),
+  ticket_number text not null,
+  snapshot jsonb not null,
+  storage_path text,
+  created_at timestamptz not null default now(),
+  unique(workshop_id, ticket_number),
+  foreign key(workshop_id, repair_id) references public.repairs(workshop_id, id) on delete restrict
+);
+create index if not exists tickets_workshop_date_idx on public.tickets(workshop_id, created_at desc);
+
+create table if not exists public.audit_events (
+  id bigint generated always as identity primary key,
+  workshop_id uuid not null default public.current_workshop_id() references public.workshops(id) on delete cascade,
+  actor_user_id uuid not null default auth.uid(),
+  entity_type text not null,
+  entity_id uuid,
+  action text not null,
+  details jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+create index if not exists audit_workshop_date_idx on public.audit_events(workshop_id, created_at desc);
+
+-- 7) RLS: todas las tablas operativas quedan aisladas por el taller del usuario.
+alter table public.workshops enable row level security;
+alter table public.issuer_profiles enable row level security;
+alter table public.customers enable row level security;
+alter table public.repairs enable row level security;
+alter table public.recipient_companies enable row level security;
+alter table public.invoice_counters enable row level security;
+alter table public.invoices enable row level security;
+alter table public.invoice_lines enable row level security;
+alter table public.inventory_items enable row level security;
+alter table public.stock_movements enable row level security;
+alter table public.appointments enable row level security;
+alter table public.tickets enable row level security;
+alter table public.audit_events enable row level security;
+
+grant select, update on public.workshops to authenticated;
+grant select, insert, update, delete on public.issuer_profiles, public.customers, public.repairs,
+  public.recipient_companies, public.invoices, public.invoice_lines, public.inventory_items,
+  public.stock_movements, public.appointments, public.tickets, public.audit_events to authenticated;
+grant select, insert, update on public.invoice_counters to authenticated;
+grant usage, select on all sequences in schema public to authenticated;
+
+drop policy if exists workshop_owner_select on public.workshops;
+create policy workshop_owner_select on public.workshops for select to authenticated using (owner_user_id = auth.uid());
+drop policy if exists workshop_owner_update on public.workshops;
+create policy workshop_owner_update on public.workshops for update to authenticated using (owner_user_id = auth.uid()) with check (owner_user_id = auth.uid());
+
+-- Políticas generadas por tabla, siempre comparando workshop_id con la función segura.
+do $$
+declare t text;
+begin
+  foreach t in array array['issuer_profiles','customers','repairs','recipient_companies','invoice_counters','invoices','invoice_lines','inventory_items','stock_movements','appointments','tickets','audit_events'] loop
+    execute format('drop policy if exists workshop_isolation on public.%I', t);
+    execute format('create policy workshop_isolation on public.%I for all to authenticated using (workshop_id = public.current_workshop_id()) with check (workshop_id = public.current_workshop_id())', t);
+  end loop;
+end $$;
+
+grant execute on function public.next_invoice_number(integer) to authenticated;
+grant execute on function public.record_stock_movement(uuid, integer, text) to authenticated;
+
+-- 8) Storage privado para PDFs/tickets. El primer segmento de la ruta es workshop_id.
+insert into storage.buckets(id, name, public, file_size_limit, allowed_mime_types)
+values ('sanddesk-private', 'sanddesk-private', false, 15728640, array['application/pdf','image/jpeg','image/png'])
+on conflict (id) do nothing;
+
+drop policy if exists sanddesk_storage_read on storage.objects;
+create policy sanddesk_storage_read on storage.objects for select to authenticated
+using (bucket_id = 'sanddesk-private' and (storage.foldername(name))[1] = public.current_workshop_id()::text);
+drop policy if exists sanddesk_storage_insert on storage.objects;
+create policy sanddesk_storage_insert on storage.objects for insert to authenticated
+with check (bucket_id = 'sanddesk-private' and (storage.foldername(name))[1] = public.current_workshop_id()::text);
+drop policy if exists sanddesk_storage_update on storage.objects;
+create policy sanddesk_storage_update on storage.objects for update to authenticated
+using (bucket_id = 'sanddesk-private' and (storage.foldername(name))[1] = public.current_workshop_id()::text)
+with check (bucket_id = 'sanddesk-private' and (storage.foldername(name))[1] = public.current_workshop_id()::text);
+drop policy if exists sanddesk_storage_delete on storage.objects;
+create policy sanddesk_storage_delete on storage.objects for delete to authenticated
+using (bucket_id = 'sanddesk-private' and (storage.foldername(name))[1] = public.current_workshop_id()::text);
+
+-- No se insertan registros demo. Las cuentas nuevas empiezan vacías.

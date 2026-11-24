@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#03060b">
+  <meta name="description" content="Demo interactiva de Sand Desk para talleres mecánicos de coches y furgonetas.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/mechanic-demo.css">
+  <link rel="stylesheet" href="css/mechanic-demo-enhanced.css">
+  <link rel="stylesheet" href="css/mechanic-demo-scale.css">
+  <title>Sand Desk Garage — Demo interactiva</title>
+</head>
+<body class="garage-app">
+  <div class="ambient-grid" aria-hidden="true"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html#inicio" aria-label="Volver al inicio de Sand Desk"><img src="assets/logo-mark.svg" alt=""><span>Sand <b>Desk</b><small>GARAGE MANAGEMENT</small></span></a>
+      <div class="workshop-card"><div class="workshop-icon">⌁</div><div><strong>MotorLab Garage</strong><small>Espacio de demostración</small></div><span class="chevron">⌄</span></div>
+      <div class="nav-label">TALLER</div>
+      <nav class="side-nav" aria-label="Navegación del taller">
+        <button class="nav-link active" data-view="overview"><span class="nav-icon">▦</span> Resumen</button>
+        <button class="nav-link" data-view="orders"><span class="nav-icon">⚙</span> Órdenes de trabajo <i id="activeOrderCount">0</i></button>
+        <button class="nav-link" data-view="vehicles"><span class="nav-icon">▰</span> Vehículos</button>
+        <button class="nav-link" data-view="customers"><span class="nav-icon">♙</span> Clientes</button>
+        <div class="nav-label nav-label-spaced">ORGANIZACIÓN</div>
+        <button class="nav-link" data-view="parts"><span class="nav-icon">▤</span> Recambios y stock <i id="lowStockCount">0</i></button>
+        <button class="nav-link" data-view="appointments"><span class="nav-icon">▦</span> Citas y agenda</button>
+        <button class="nav-link" data-view="invoices"><span class="nav-icon">▧</span> Facturación</button>
+        <button class="nav-link" data-view="reports"><span class="nav-icon">▥</span> Informes</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="demo-note"><span>✦</span><div><strong>Modo demostración</strong><p>Explora el panel y prueba a crear órdenes. Los cambios se guardan en este navegador.</p></div></div>
+        <a class="back-link" href="mecanico.html">← Volver a taller mecánico</a>
+        <div class="profile"><div class="profile-avatar">A</div><div><strong>Admin</strong><small>Administrador</small></div><span class="online-dot"></span></div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="topbar-left"><button class="mobile-menu" id="mobileMenu" aria-label="Abrir menú">☰</button><div class="breadcrumbs"><span>Sand Desk Garage</span><b>/</b><strong id="currentCrumb">Resumen</strong></div></div>
+        <div class="topbar-right"><span class="live-pill"><i></i> DEMO EN VIVO</span><button class="icon-button" id="topAddOrder" title="Nueva orden">＋</button><div class="top-profile"><span class="profile-avatar">A</span><strong>Admin</strong><span class="muted">⌄</span></div></div>
+      </header>
+
+      <div class="content-area">
+        <section class="page-view active" id="view-overview" data-title="Resumen">
+          <div class="page-heading"><div><div class="eyebrow">PANEL DE CONTROL <span>·</span> LUNES, 23 NOVIEMBRE</div><h1>Buenos días, Admin <span class="heading-spark">✦</span></h1><p>Este es el estado de tu taller. Aquí tienes lo importante para hoy.</p></div><div class="heading-buttons"><button class="btn btn-outline" id="exportCsv">↓ Exportar</button><button class="btn btn-primary" data-open-modal="orderModal">＋ Nueva orden</button></div></div>
+          <div class="overview-grid overview-grid-featured">
+            <article class="panel revenue-panel"><div class="panel-heading"><div><div class="eyebrow">RENDIMIENTO <span class="revenue-live-dot"></span></div><h2>Ingresos del taller</h2><p>Facturación y evolución mensual · 2026</p></div><select class="dark-select" id="revenuePeriod"><option value="6">Últimos 6 meses</option><option value="12">Últimos 12 meses</option></select></div><div class="revenue-total"><strong id="revenueTotal">18.920 €</strong><span class="positive">↗ 14,8%</span><small>Este mes</small><span class="revenue-period-note">vs. mes anterior</span></div><div class="chart-wrap chart-wrap-featured"><div class="chart-y"><span>20k</span><span>15k</span><span>10k</span><span>5k</span><span>0</span></div><div class="bar-chart" id="revenueChart" aria-label="Gráfico de ingresos mensuales"></div></div></article>
+            <article class="panel workload-panel"><div class="panel-heading"><div><div class="eyebrow">ESTADO DEL TALLER</div><h2>Órdenes por estado</h2><p>Distribución actual de trabajos</p></div><span class="panel-menu">···</span></div><div class="donut-row"><div class="donut-chart" id="statusDonut"><div><strong id="donutTotal">18</strong><small>ÓRDENES</small></div></div><div class="legend-list" id="statusLegend"></div></div><div class="capacity-box"><div><span>Capacidad del taller</span><strong>74%</strong></div><div class="capacity-track"><i style="width:74%"></i></div><small>11 de 15 puestos ocupados</small></div></article>
+          </div>
+
+          <div class="kpi-grid">
+            <article class="kpi-card"><div class="kpi-top"><span>ÓRDENES ACTIVAS</span><span class="kpi-icon">⚙</span></div><div class="kpi-value" id="kpiActive">18</div><div class="kpi-foot"><b class="positive">+12,5%</b> frente al mes pasado</div><div class="kpi-line"><i style="width:72%"></i></div></article>
+            <article class="kpi-card"><div class="kpi-top"><span>VEHÍCULOS EN TALLER</span><span class="kpi-icon">▰</span></div><div class="kpi-value" id="kpiVehicles">11</div><div class="kpi-foot"><b class="positive">4 furgonetas</b> · 7 turismos</div><div class="kpi-line"><i style="width:58%"></i></div></article>
+            <article class="kpi-card"><div class="kpi-top"><span>ENTREGAS PARA HOY</span><span class="kpi-icon">↗</span></div><div class="kpi-value" id="kpiDeliveries">5</div><div class="kpi-foot"><b class="warning">2 pendientes</b> de revisión final</div><div class="kpi-line"><i style="width:44%"></i></div></article>
+            <article class="kpi-card kpi-revenue"><div class="kpi-top"><span>FACTURACIÓN DEL MES</span><span class="kpi-icon">€</span></div><div class="kpi-value" id="kpiRevenue">18.920 €</div><div class="kpi-foot"><b class="positive">↗ 14,8%</b> respecto a octubre</div><div class="kpi-line"><i style="width:81%"></i></div></article>
+          </div>
+
+          <section class="garage-brand-showcase panel" aria-labelledby="garageBrandHeading">
+            <div class="garage-brand-heading">
+              <div><div class="eyebrow">IDENTIFICACIÓN DE VEHÍCULOS</div><h2 id="garageBrandHeading">Marcas de vehículos</h2><p>Referencias visuales para identificar rápidamente cada coche o furgoneta.</p></div>
+              <span class="garage-brand-count">7 MARCAS</span>
+            </div>
+            <div class="garage-brand-grid">
+              <div class="garage-brand-tile"><img src="assets/brands/audi.png" alt="" loading="lazy"><span>Audi</span></div>
+              <div class="garage-brand-tile"><img src="assets/brands/mercedes-benz.png" alt="" loading="lazy"><span>Mercedes-Benz</span></div>
+              <div class="garage-brand-tile"><img src="assets/brands/mitsubishi.png" alt="" loading="lazy"><span>Mitsubishi</span></div>
+              <div class="garage-brand-tile"><img src="assets/brands/fiat.png" alt="" loading="lazy"><span>Fiat</span></div>
+              <div class="garage-brand-tile"><img src="assets/brands/peugeot.png" alt="" loading="lazy"><span>Peugeot</span></div>
+              <div class="garage-brand-tile"><img src="assets/brands/bmw.png" alt="" loading="lazy"><span>BMW</span></div>
+              <div class="garage-brand-tile"><img src="assets/brands/kia.png" alt="" loading="lazy"><span>Kia</span></div>
+            </div>
+          </section>
+
+          <div class="lower-grid"><article class="panel table-panel"><div class="panel-heading"><div><div class="eyebrow">ACTIVIDAD RECIENTE</div><h2>Últimas órdenes de trabajo</h2></div><button class="text-link" data-goto="orders">Ver todas ↗</button></div><div class="table-scroll"><table><thead><tr><th>ORDEN</th><th>VEHÍCULO</th><th>CLIENTE</th><th>TRABAJO</th><th>ESTADO</th><th></th></tr></thead><tbody id="recentOrders"></tbody></table></div></article>
+            <article class="panel agenda-panel"><div class="panel-heading"><div><div class="eyebrow">PLANIFICACIÓN</div><h2>Próximas citas</h2></div><button class="text-link" data-goto="appointments">Agenda ↗</button></div><div class="agenda-list" id="upcomingAppointments"></div><button class="btn btn-soft btn-wide" data-open-modal="appointmentModal">＋ Añadir cita</button></article></div>
+
+          <div class="quick-strip"><div><span class="quick-icon">▤</span><div><strong>Recambios por reponer</strong><small id="lowStockMessage">3 referencias por debajo del mínimo</small></div></div><button class="text-link" data-goto="parts">Revisar stock ↗</button></div>
+        </section>
+
+        <section class="page-view" id="view-orders" data-title="Órdenes de trabajo">
+          <div class="page-heading"><div><div class="eyebrow">OPERACIONES <span>·</span> TALLER</div><h1>Órdenes de trabajo</h1><p>Controla cada reparación desde la recepción hasta la entrega del vehículo.</p></div><button class="btn btn-primary" data-open-modal="orderModal">＋ Nueva orden</button></div>
+          <div class="summary-chips" id="orderSummary"></div>
+          <article class="panel full-table-panel"><div class="table-toolbar"><div class="search-box"><span>⌕</span><input id="orderSearch" placeholder="Buscar matrícula, vehículo, cliente u orden..."></div><select id="orderStatusFilter" class="dark-select"><option value="all">Todos los estados</option><option>En diagnóstico</option><option>En reparación</option><option>Esperando recambio</option><option>Listo para entregar</option></select></div><div class="table-scroll"><table><thead><tr><th>ORDEN</th><th>VEHÍCULO</th><th>MATRÍCULA</th><th>CLIENTE</th><th>ENTRADA</th><th>ESTADO</th><th>IMPORTE</th><th></th></tr></thead><tbody id="ordersTable"></tbody></table></div></article>
+        </section>
+
+        <section class="page-view" id="view-vehicles" data-title="Vehículos">
+          <div class="page-heading"><div><div class="eyebrow">FICHAS <span>·</span> FLOTA DE CLIENTES</div><h1>Vehículos</h1><p>Turismos y vehículos comerciales con su historial de mantenimiento.</p></div><button class="btn btn-primary" data-open-modal="orderModal">＋ Registrar entrada</button></div>
+          <div class="vehicle-type-grid" id="vehicleTypeCards"></div>
+          <article class="panel full-table-panel"><div class="table-toolbar"><div class="search-box"><span>⌕</span><input id="vehicleSearch" placeholder="Buscar matrícula, marca o modelo..."></div><select id="vehicleTypeFilter" class="dark-select"><option value="all">Todos los vehículos</option><option value="Turismo">Turismos</option><option value="Furgoneta">Furgonetas</option></select></div><div class="table-scroll"><table><thead><tr><th>VEHÍCULO</th><th>MATRÍCULA</th><th>TIPO</th><th>KILOMETRAJE</th><th>ÚLTIMO SERVICIO</th><th>ESTADO</th></tr></thead><tbody id="vehiclesTable"></tbody></table></div></article>
+        </section>
+
+        <section class="page-view" id="view-customers" data-title="Clientes">
+          <div class="page-heading"><div><div class="eyebrow">RELACIONES <span>·</span> CLIENTES</div><h1>Clientes</h1><p>Personas y empresas con sus vehículos y trabajos realizados.</p></div><button class="btn btn-primary" id="addCustomer">＋ Nuevo cliente</button></div>
+          <div class="customer-kpis" id="customerKpis"></div>
+          <article class="panel full-table-panel"><div class="table-toolbar"><div class="search-box"><span>⌕</span><input id="customerSearch" placeholder="Buscar cliente o empresa..."></div></div><div class="table-scroll"><table><thead><tr><th>CLIENTE</th><th>CONTACTO</th><th>VEHÍCULOS</th><th>ÓRDENES</th><th>ÚLTIMA VISITA</th><th>TIPO</th></tr></thead><tbody id="customersTable"></tbody></table></div></article>
+        </section>
+
+        <section class="page-view" id="view-parts" data-title="Recambios y stock">
+          <div class="page-heading"><div><div class="eyebrow">ALMACÉN <span>·</span> INVENTARIO</div><h1>Recambios y stock</h1><p>Controla piezas, consumibles y materiales utilizados en cada intervención.</p></div><button class="btn btn-primary" data-open-modal="partModal">＋ Añadir recambio</button></div>
+          <div class="parts-kpis" id="partsKpis"></div>
+          <article class="panel full-table-panel"><div class="table-toolbar"><div class="search-box"><span>⌕</span><input id="partSearch" placeholder="Buscar referencia o recambio..."></div><select id="partFilter" class="dark-select"><option value="all">Todas las categorías</option><option>Filtros</option><option>Frenos</option><option>Motor</option><option>Electricidad</option><option>Lubricantes</option><option>Consumibles</option></select></div><div class="table-scroll"><table><thead><tr><th>REFERENCIA</th><th>RECAMBIO</th><th>CATEGORÍA</th><th>STOCK</th><th>MÍNIMO</th><th>COSTE UNIT.</th><th>ESTADO</th></tr></thead><tbody id="partsTable"></tbody></table></div></article>
+        </section>
+
+        <section class="page-view" id="view-appointments" data-title="Citas y agenda">
+          <div class="page-heading"><div><div class="eyebrow">CALENDARIO <span>·</span> RECEPCIÓN</div><h1>Citas y agenda</h1><p>Organiza recepciones, diagnósticos, mantenimientos y entregas.</p></div><button class="btn btn-primary" data-open-modal="appointmentModal">＋ Nueva cita</button></div>
+          <div class="calendar-banner"><div class="calendar-date"><strong>23</strong><span>NOV 2026</span></div><div><div class="eyebrow">AGENDA DEL TALLER</div><h2>Planifica el trabajo de la semana.</h2><p>Coordina entradas y salidas para mantener los puestos de trabajo en marcha.</p></div><div class="calendar-stat"><strong id="appointmentCount">8</strong><small>CITAS PROGRAMADAS</small></div></div>
+          <article class="panel full-table-panel"><div class="panel-heading"><div><div class="eyebrow">PRÓXIMAS VISITAS</div><h2>Agenda de recepción</h2></div></div><div id="appointmentsList" class="appointments-list"></div></article>
+        </section>
+
+        <section class="page-view" id="view-invoices" data-title="Facturación">
+          <div class="page-heading"><div><div class="eyebrow">ADMINISTRACIÓN <span>·</span> COBROS</div><h1>Facturación</h1><p>Presupuestos, facturas y seguimiento de cobros del taller.</p></div><button class="btn btn-primary" id="newInvoice">＋ Nueva factura</button></div>
+          <div class="invoice-kpis" id="invoiceKpis"></div>
+          <article class="panel full-table-panel"><div class="panel-heading"><div><div class="eyebrow">DOCUMENTOS RECIENTES</div><h2>Facturas emitidas</h2></div></div><div class="table-scroll"><table><thead><tr><th>Nº FACTURA</th><th>CLIENTE</th><th>CONCEPTO</th><th>FECHA</th><th>IMPORTE</th><th>ESTADO</th></tr></thead><tbody id="invoicesTable"></tbody></table></div></article>
+        </section>
+
+        <section class="page-view" id="view-reports" data-title="Informes">
+          <div class="page-heading"><div><div class="eyebrow">ANÁLISIS <span>·</span> RENDIMIENTO</div><h1>Informes del taller</h1><p>Analiza facturación, tipos de intervención y productividad.</p></div><button class="btn btn-outline" id="reportExport">↓ Descargar resumen</button></div>
+          <div class="report-grid"><article class="panel report-card"><div class="eyebrow">FACTURACIÓN POR MES</div><h2>Ingresos</h2><div class="report-big">18.920 € <span class="positive">+14,8%</span></div><div id="reportRevenue" class="report-bars"></div></article><article class="panel report-card"><div class="eyebrow">TIPOS DE INTERVENCIÓN</div><h2>Servicios más habituales</h2><div class="service-breakdown"><div><span>⌁</span><p><b>Mantenimiento</b><small>Revisión, aceite y filtros</small></p><strong>34%</strong></div><div><span>◉</span><p><b>Frenos y suspensión</b><small>Pastillas, discos, amortiguación</small></p><strong>26%</strong></div><div><span>⚙</span><p><b>Motor y diagnosis</b><small>Averías y comprobaciones</small></p><strong>22%</strong></div><div><span>ϟ</span><p><b>Electricidad</b><small>Batería y sistemas eléctricos</small></p><strong>18%</strong></div></div></article></div>
+          <div class="report-grid"><article class="panel report-card"><div class="eyebrow">PRODUCTIVIDAD</div><h2>Horas facturables</h2><div class="report-big">286 h <span class="positive">+8,2%</span></div><div class="capacity-track report-track"><i style="width:78%"></i></div><small class="muted-text">78% de las horas disponibles del equipo</small></article><article class="panel report-card"><div class="eyebrow">TIPO DE VEHÍCULO</div><h2>Turismos y comerciales</h2><div class="vehicle-split"><div><strong>64%</strong><span>Turismos</span><i style="width:64%"></i></div><div><strong>36%</strong><span>Furgonetas</span><i style="width:36%"></i></div></div></article></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="orderModal" aria-hidden="true"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle"><header class="modal-head"><div><div class="eyebrow">RECEPCIÓN DE VEHÍCULO</div><h2 id="orderModalTitle">Nueva orden de trabajo</h2><p>Registra el vehículo y la intervención solicitada.</p></div><button class="close-modal" data-close-modal aria-label="Cerrar">×</button></header><form id="orderForm" class="form-grid"><label class="field"><span>Cliente *</span><input name="client" required placeholder="Nombre del cliente"></label><label class="field"><span>Teléfono</span><input name="phone" placeholder="600 000 000"></label><label class="field"><span>Tipo de vehículo *</span><select name="type"><option>Turismo</option><option>Furgoneta</option></select></label><label class="field"><span>Matrícula *</span><input name="plate" required placeholder="1234 ABC" maxlength="10"></label><label class="field"><span>Marca *</span><input name="brand" required placeholder="Ej. SEAT"></label><label class="field"><span>Modelo *</span><input name="model" required placeholder="Ej. León 2.0 TDI"></label><label class="field"><span>Kilometraje</span><input name="km" type="number" min="0" placeholder="125000"></label><label class="field"><span>Combustible</span><select name="fuel"><option>Diésel</option><option>Gasolina</option><option>Híbrido</option><option>Eléctrico</option><option>GLP</option></select></label><label class="field full"><span>Trabajo / avería solicitada *</span><input name="job" required placeholder="Ej. Cambio de distribución, revisión, diagnosis... "></label><label class="field"><span>Estado inicial</span><select name="status"><option>En diagnóstico</option><option>En reparación</option><option>Esperando recambio</option><option>Listo para entregar</option></select></label><label class="field"><span>Presupuesto (€)</span><input name="amount" type="number" min="0" step="0.01" placeholder="0,00"></label><label class="field full"><span>Notas del vehículo</span><textarea name="notes" rows="2" placeholder="Daños visibles, avisos del cliente, accesorios entregados..."></textarea></label><div class="form-actions full"><span>Se guardará en este navegador.</span><button type="button" class="btn btn-outline" data-close-modal>Cancelar</button><button class="btn btn-primary" type="submit">Crear orden</button></div></form></section></div>
+
+  <div class="modal-backdrop" id="appointmentModal" aria-hidden="true"><section class="modal-card modal-narrow" role="dialog" aria-modal="true" aria-labelledby="appointmentModalTitle"><header class="modal-head"><div><div class="eyebrow">AGENDA DEL TALLER</div><h2 id="appointmentModalTitle">Nueva cita</h2><p>Reserva una recepción o entrega.</p></div><button class="close-modal" data-close-modal aria-label="Cerrar">×</button></header><form id="appointmentForm" class="form-grid"><label class="field full"><span>Cliente *</span><input name="client" required placeholder="Nombre del cliente"></label><label class="field"><span>Fecha *</span><input name="date" type="date" required></label><label class="field"><span>Hora *</span><input name="time" type="time" required value="10:00"></label><label class="field full"><span>Vehículo</span><input name="vehicle" placeholder="Matrícula · Modelo"></label><label class="field full"><span>Motivo</span><input name="reason" placeholder="Ej. Revisión periódica"></label><div class="form-actions full"><span></span><button type="button" class="btn btn-outline" data-close-modal>Cancelar</button><button type="submit" class="btn btn-primary">Guardar cita</button></div></form></section></div>
+
+  <div class="modal-backdrop" id="partModal" aria-hidden="true"><section class="modal-card modal-narrow" role="dialog" aria-modal="true" aria-labelledby="partModalTitle"><header class="modal-head"><div><div class="eyebrow">ALMACÉN</div><h2 id="partModalTitle">Añadir recambio</h2><p>Incluye una pieza en el inventario del taller.</p></div><button class="close-modal" data-close-modal aria-label="Cerrar">×</button></header><form id="partForm" class="form-grid"><label class="field full"><span>Nombre del recambio *</span><input name="name" required placeholder="Ej. Filtro de aceite"></label><label class="field"><span>Referencia</span><input name="sku" placeholder="FIL-OIL-01"></label><label class="field"><span>Categoría</span><select name="category"><option>Filtros</option><option>Frenos</option><option>Motor</option><option>Electricidad</option><option>Lubricantes</option><option>Consumibles</option></select></label><label class="field"><span>Unidades</span><input name="stock" type="number" min="0" value="0"></label><label class="field"><span>Stock mínimo</span><input name="minimum" type="number" min="0" value="2"></label><label class="field"><span>Coste unitario (€)</span><input name="cost" type="number" min="0" step="0.01" value="0"></label><div class="form-actions full"><span></span><button type="button" class="btn btn-outline" data-close-modal>Cancelar</button><button type="submit" class="btn btn-primary">Añadir recambio</button></div></form></section></div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <script src="js/mechanic-demo.js" defer></script>
+  <script src="js/mechanic-demo-effects.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#050407" />
+<meta name="description" content="Sand Desk: digitaliza tu negocio y gestiona clientes, operaciones, equipo, ventas y resultados desde un solo sistema." />
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" />
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<title>Sand Desk — Gestión para talleres de móviles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/expansion.css"><link rel="stylesheet" href="css/landing-conversion.css">
+</head>
+<body>
+<div class="scene">
+  <canvas class="stars" id="stars" data-ambient-stars aria-hidden="true"></canvas>
+  <div class="planet-fallback" aria-hidden="true"></div>
+  <video class="planet-video" id="planetVideo" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/e859f229-8ebd-43fb-a5a0-58006ba75327.mp4" type="video/mp4"></video>
+  <header class="nav shell">
+    <a class="brand" href="index.html#inicio" aria-label="Volver al inicio de Sand Desk"><img class="brand-symbol" src="assets/logo-mark.svg" alt="" /><span class="brand-word">Sand <span class="brand-accent">Desk</span></span></a>
+    <nav class="nav-links"><a href="index.html#inicio">Inicio</a><a href="#funciones">Funciones</a><a href="#dashboard">Plataforma</a><a href="#precios">Precios</a><a href="#contacto">Contacto</a></nav>
+    <div class="nav-right"><a class="industry-link" href="moviles.html" aria-current="page">Taller de móvil</a><a class="industry-link" href="mecanico.html">Taller mecánico</a><a class="nav-cta" href="demo.html">Solicitar demo <span>↗</span></a></div>
+    <button class="menu-btn" aria-label="Abrir menú" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')">☰</button>
+  </header>
+  <main id="inicio">
+    <section class="hero shell">
+      <div class="eyebrow"><span class="eyebrow-dot"></span> EL SISTEMA OPERATIVO DE TU NEGOCIO</div>
+      <h1>Tu taller de móviles,<br><span class="gradient">bajo control.</span></h1>
+      <p class="lede">Gestiona reparaciones, clientes, terminales, inventario, tickets y citas desde un único dashboard diseñado para servicios técnicos de móviles.</p>
+      <div class="hero-actions"><a class="primary" href="demo.html">Solicitar una demo <span>→</span></a><a class="secondary" href="#dashboard">Explorar plataforma</a></div>
+    </section>
+    <section class="dashboard-wrap" id="dashboard" aria-label="Vista previa del panel de Sand Desk">
+      <img class="dash-glow" src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/e0e14572-12e1-4c08-b471-a21521844945.png" alt="" />
+      <div class="dashboard">
+        <aside class="sidebar">
+          <div class="side-brand"><span class="brand"><img class="brand-symbol" src="assets/logo-mark.svg" alt="" /><span class="brand-word" style="font-size:13px">Sand <span class="brand-accent">Desk</span></span></span><span class="gear">⚙</span></div>
+          <div class="side-menu">
+            <a class="side-link active" href="#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Resumen</a>
+            <a class="side-link" href="#reparaciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M10 5h4M11 18h2"/></svg>Reparaciones</a>
+            <a class="side-link" href="#clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-4 2.8-6 6.5-6s6 2 6.5 6M17 5.5a3 3 0 0 1 0 5.8M18 14c2.1.6 3.3 2.4 3.5 5"/></svg>Clientes</a>
+            <a class="side-link" href="#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg>Inventario</a>
+            <a class="side-link" href="#informes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V5m0 14h17M8 15l4-4 3 2 5-7"/></svg>Informes</a>
+          </div>
+          <div class="side-label">Preferencias</div><a class="side-link" href="#contacto">⚙ <span>Configuración</span></a>
+          <div class="pro-card"><strong>Sand Desk Pro</strong><p>Desbloquea todas las herramientas para llevar tu taller al siguiente nivel.</p><button class="upgrade">Descubrir Pro ↗</button></div>
+        </aside>
+        <div class="main">
+          <div class="topbar"><div class="crumb">Resumen general <span style="color:#777080;font-weight:400">/ Panel</span><span class="demo-live"><i></i> VISTA DEMO · DATOS ANIMADOS</span></div><div class="top-actions"><span class="top-icon">⌕</span><span class="top-icon">♧</span><span class="top-icon">♧</span><div class="user"><span class="avatar">A</span><span>Admin<small>Administrador · Taller principal</small></span></div></div></div>
+          <div class="dash-heading"><div><h2>¡Buenos días, Admin! 👋</h2><p>Esto es lo que está pasando hoy en tu taller.</p></div><button class="period">Últimos 30 días⌄</button></div>
+          <div class="stats">
+            <div class="stat"><div class="stat-top"><span>Ingresos del mes</span><span class="stat-icon">€</span></div><div class="stat-value revenue-counter" data-counter data-value="8420" data-start="7210" data-format="currency" aria-label="8.420 euros">7.210 €</div><div class="stat-foot"><span class="positive">↗ 12,8%</span> respecto al mes anterior</div></div>
+            <div class="stat"><div class="stat-top"><span>Reparaciones activas</span><span class="stat-icon">▣</span></div><div class="stat-value" data-counter data-value="48" data-start="36" data-format="integer" aria-label="48 reparaciones activas">36</div><div class="stat-foot"><span class="positive">+8</span> nuevas esta semana</div></div>
+            <div class="stat"><div class="stat-top"><span>Reparaciones hoy</span><span class="stat-icon">✓</span></div><div class="stat-value" data-counter data-value="17" data-start="9" data-format="integer" aria-label="17 reparaciones hoy">9</div><div class="stat-foot"><span class="positive">↗ +3</span> completadas hoy</div></div>
+            <div class="stat"><div class="stat-top"><span>Tiempo medio de gestión</span><span class="stat-icon">◷</span></div><div class="stat-value" data-counter data-value="1.8" data-start="2.5" data-format="days" aria-label="1,8 días">2,5 días</div><div class="stat-foot"><span class="positive">↓ 6,4%</span> más rápido este mes</div></div>
+          <div class="stat"><div class="stat-top"><span>Clientes activos</span><span class="stat-icon">♙</span></div><div class="stat-value" data-counter data-value="326" data-start="290" data-format="integer">290</div><div class="stat-foot"><span class="positive">↗ 9,2%</span> este trimestre</div></div><div class="stat"><div class="stat-top"><span>Conversión de presupuestos</span><span class="stat-icon">◎</span></div><div class="stat-value" data-counter data-value="74" data-start="68" data-format="integer">68%</div><div class="stat-foot"><span class="positive">↗ 6%</span> respecto al periodo anterior</div></div></div>
+          <div class="content-grid">
+            <div class="panel"><div class="panel-head"><h3>Actividad del taller</h3><span>Operaciones completadas</span></div><div class="chart-area"><svg viewBox="0 0 560 155" preserveAspectRatio="none"><defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#a33cff" stop-opacity=".38"/><stop offset="1" stop-color="#a33cff" stop-opacity="0"/></linearGradient></defs><g stroke="#ffffff" stroke-opacity=".07" stroke-dasharray="3 5"><path d="M0 25H560M0 65H560M0 105H560M0 145H560"/></g><path class="chart-fill" d="M0 125 C30 115 42 119 65 100 S105 105 130 84 S165 93 190 70 S228 83 250 62 S290 72 315 48 S350 68 380 42 S425 52 450 30 S500 45 530 18 L560 28 V155 H0Z" fill="url(#area)"/><path class="chart-line" d="M0 125 C30 115 42 119 65 100 S105 105 130 84 S165 93 190 70 S228 83 250 62 S290 72 315 48 S350 68 380 42 S425 52 450 30 S500 45 530 18 L560 28" fill="none" stroke="#b66aff" stroke-width="2.5"/><circle cx="530" cy="18" r="4" fill="#e5c7ff" stroke="#9c36ef" stroke-width="4"/></svg></div><div class="chart-labels"><span>01 Nov</span><span>05 Nov</span><span>10 Nov</span><span>15 Nov</span><span>20 Nov</span><span>Hoy</span></div></div>
+            <div class="panel" id="reparaciones"><div class="panel-head"><h3>Reparaciones recientes</h3><span>Ver todas ↗</span></div><div class="repair-list">
+              <div class="repair-row"><span class="device-icon">▯</span><div class="repair-info"><strong>iPhone 14 Pro</strong><small>#SD-2048 · Cambio de pantalla</small></div><span class="status work">En reparación</span></div>
+              <div class="repair-row"><span class="device-icon">▯</span><div class="repair-info"><strong>Samsung S23</strong><small>#SD-2047 · Cambio de batería</small></div><span class="status wait">Pendiente</span></div>
+              <div class="repair-row"><span class="device-icon">▯</span><div class="repair-info"><strong>iPhone 12</strong><small>#SD-2046 · Conector de carga</small></div><span class="status done">Completada</span></div>
+              <div class="repair-row"><span class="device-icon">▯</span><div class="repair-info"><strong>Xiaomi Redmi Note 13</strong><small>#SD-2045 · Diagnóstico</small></div><span class="status work">En revisión</span></div>
+            </div></div>
+          </div>
+          <div class="bottom-grid">
+            <div class="panel" id="clientes"><div class="panel-head"><h3>Últimos clientes</h3><span>Ver clientes ↗</span></div><table class="table"><thead><tr><th>CLIENTE</th><th>DISPOSITIVO</th><th>IMPORTE</th></tr></thead><tbody>
+              <tr><td><span class="customer"><span class="customer-avatar">LM</span>Laura M.</span></td><td>iPhone 14 Pro</td><td class="amount">189,00 €</td></tr>
+              <tr><td><span class="customer"><span class="customer-avatar">JP</span>Javier P.</span></td><td>Samsung S23</td><td class="amount">69,00 €</td></tr>
+              <tr><td><span class="customer"><span class="customer-avatar">CR</span>Carlos R.</span></td><td>iPhone 12</td><td class="amount">49,00 €</td></tr>
+            </tbody></table></div>
+            <div class="panel" id="informes"><div class="panel-head"><h3>Rendimiento semanal</h3><span>Este mes</span></div><div class="mini-bars"><div class="bar" style="height:44%"></div><div class="bar" style="height:62%"></div><div class="bar" style="height:52%"></div><div class="bar" style="height:85%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:100%"></div><div class="bar" style="height:78%"></div><div class="bar" style="height:91%"></div></div><div class="bars-label"><span>Sem. 1</span><span>Sem. 2</span><span>Sem. 3</span><span>Sem. 4</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<section class="sector-capabilities shell" id="funciones">
+      <div class="section-heading" data-reveal><div class="eyebrow"><span class="eyebrow-dot"></span>GESTIÓN INTEGRAL PARA SERVICIOS TÉCNICOS</div><h2>Todo tu taller de móviles, <span class="gradient">conectado.</span></h2><p>Organiza reparaciones, dispositivos, clientes, accesorios y resultados desde un sistema preparado para el ritmo de un servicio técnico.</p></div>
+      <div class="capability-grid"><article class="capability-card wide" data-reveal>
+          <div class="capability-icon" aria-hidden="true">⌂</div><div class="capability-copy"><small>01 / ORGANIZACIÓN</small><h3>Sistema multi-sucursal y multi-taller</h3><p>Gestiona varios puntos de reparación desde una sola cuenta. Mantén el control de cada local, el equipo y la actividad de forma centralizada.</p><div class="capability-tags"><span>Sucursales</span><span>Roles</span><span>Control centralizado</span></div></div>
+        </article><article class="capability-card" data-reveal>
+          <div class="capability-icon" aria-hidden="true">◇</div><div class="capability-copy"><small>02 / INVENTARIO</small><h3>Inventario inteligente de piezas</h3><p>Controla pantallas, baterías, componentes y accesorios. Consulta existencias, movimientos y alertas de stock bajo antes de quedarte sin piezas.</p><div class="capability-tags"><span>Repuestos</span><span>Accesorios</span><span>Alertas</span></div></div>
+        </article><article class="capability-card" data-reveal>
+          <div class="capability-icon" aria-hidden="true">▣</div><div class="capability-copy"><small>03 / VENTAS</small><h3>Punto de venta POS integrado</h3><p>Registra ventas de accesorios, cobra reparaciones y organiza tickets y facturas desde el mismo flujo de trabajo.</p><div class="capability-tags"><span>Ventas</span><span>Cobros</span><span>Tickets</span></div></div>
+        </article><article class="capability-card wide" data-reveal>
+          <div class="capability-icon" aria-hidden="true">♙</div><div class="capability-copy"><small>04 / CRM</small><h3>Base de datos CRM de clientes</h3><p>Consulta el historial de cada cliente y dispositivo, IMEI, reparaciones anteriores, garantías, datos de contacto y notas personalizadas.</p><div class="capability-tags"><span>Clientes</span><span>Dispositivos</span><span>Garantías</span></div></div>
+        </article><article class="capability-card full" data-reveal>
+          <div class="capability-icon" aria-hidden="true">▥</div><div class="capability-copy"><small>05 / ANALÍTICA</small><h3>Reportes y analítica del negocio</h3><p>Visualiza ingresos, reparaciones por periodo, servicios más solicitados y evolución del inventario. Exporta y revisa los resultados de tu taller.</p><div class="capability-tags"><span>Ingresos</span><span>Reparaciones</span><span>Resultados</span></div></div>
+        </article></div>
+    </section>
+    <section class="pricing-section shell" id="precios">
+      <div class="section-heading">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> Planes y precios</div>
+        <h2>Una gestión más inteligente.<br><span class="gradient">A tu manera.</span></h2>
+        <p>Una plataforma flexible para centralizar el trabajo diario, controlar resultados y tener una visión clara de cada área de tu empresa.</p>
+      </div>
+      <div class="pricing-grid">
+        <article class="price-card">
+          <div class="price-particles" aria-hidden="true">
+            <span class="ambient-glow"></span>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+            <span class="comet"></span><span class="comet second"></span><span class="comet third"></span>
+          </div>
+          <div class="price-top"><div class="price-name">Basic</div><div class="price-tag">Esencial</div></div>
+          <p class="price-desc">Las herramientas esenciales para organizar el día a día, centralizar información y conocer el estado de tu negocio.</p>
+          <div class="price-amount"><span class="old-price">279 €</span><div class="new-price">219<small> €</small></div></div>
+          <div class="price-caption">Precio especial de lanzamiento</div><div class="saving">Ahorras 60 €</div>
+          <a class="price-action" href="demo.html?plan=Basic">Elegir Basic →</a>
+          <div class="feature-list-title">El plan incluye:</div>
+          <ul class="price-features">
+            <li><span class="price-check">✓</span><span><strong>Gestión de entradas y salidas</strong> de trabajos, pedidos y operaciones</span></li>
+            <li><span class="price-check">✓</span><span><strong>Control de procesos</strong>, estados y seguimiento de cada operación</span></li>
+            <li><span class="price-check">✓</span><span><strong>Gestión de facturas y tickets POS</strong> para tus ventas</span></li>
+            <li><span class="price-check">✓</span><span><strong>Dashboard de rentabilidad</strong> mensual y anual</span></li>
+            <li><span class="price-check">✓</span><span>Seguimiento de <strong>cómo va tu mes</strong> y evolución del negocio</span></li>
+            <li><span class="price-check">✓</span><span><strong>Estadísticas</strong> de actividad e ingresos</span></li>
+            <li><span class="price-check">✓</span><span>Resumen de tus <strong>clientes principales</strong> y actividad</span></li>
+            <li><span class="price-check">✓</span><span>Herramientas esenciales para la <strong>gestión diaria del taller</strong></span></li>
+            <li><span class="price-check">✓</span><span><strong>Ficha de recepción digital:</strong> registra el estado del dispositivo, accesorios y observaciones al recibirlo</span></li>
+            <li><span class="price-check">✓</span><span><strong>Historial por cliente y servicio:</strong> consulta reparaciones anteriores y trabajos realizados</span></li>
+            <li><span class="price-check">✓</span><span><strong>Presupuestos y notas de reparación:</strong> deja constancia del trabajo previsto y de detalles importantes</span></li>
+          </ul>
+          <div class="price-divider"></div><div class="price-footnote">La opción ideal para digitalizar la operativa y tener el negocio bajo control.</div>
+        </article>
+        <article class="price-card featured">
+          <div class="price-particles" aria-hidden="true">
+            <span class="ambient-glow"></span>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+            <span class="comet"></span><span class="comet second"></span><span class="comet third"></span>
+          </div>
+          <div class="price-top"><div class="price-name">Enhanced</div><div class="price-tag">Más completo</div></div>
+          <p class="price-desc">Lleva tu negocio un nivel más allá con comunicación automatizada y herramientas conectadas a tu página web.</p>
+          <div class="price-amount"><div class="new-price">389<small> €</small></div></div>
+          <div class="price-caption">Precio del plan Enhanced</div>
+          <a class="price-action" href="demo.html?plan=Enhanced">Elegir Enhanced →</a>
+          <div class="feature-list-title">Todo lo incluido en Basic, además de:</div>
+          <ul class="price-features">
+            <li><span class="price-check">✓</span><span><strong>Comunicación con clientes:</strong> envía correos electrónicos y mensajes de WhatsApp desde tu teléfono</span></li>
+            <li><span class="price-check">✓</span><span><strong>Notificaciones de estado:</strong> mantén al cliente informado sobre su reparación y cuándo puede recoger su dispositivo</span></li>
+            <li><span class="price-check">✓</span><span><strong>Sistema de citas online</strong> enlazado con la página web de tu taller</span></li>
+            <li><span class="price-check">✓</span><span>El cliente podrá <strong>reservar una cita desde la web</strong> de tu empresa para traer su dispositivo</span></li>
+            <li><span class="price-check">✓</span><span><strong>Agenda centralizada:</strong> consulta quién tiene previsto traer un teléfono y cuándo</span></li>
+            <li><span class="price-check">✓</span><span>Visualiza las próximas citas y organiza mejor la recepción de dispositivos</span></li>
+            <li><span class="price-check">✓</span><span><strong>Recordatorios de citas:</strong> ayuda a reducir olvidos y ausencias de clientes</span></li>
+            <li><span class="price-check">✓</span><span><strong>Mensajes preparados:</strong> plantillas para avisos de presupuesto, reparación terminada y recogida</span></li>
+            <li><span class="price-check">✓</span><span><strong>Disponibilidad de agenda:</strong> organiza los huecos de recepción para evitar solapamientos</span></li>
+          </ul>
+          <div class="price-divider"></div><div class="price-footnote">Pensado para empresas que quieren ofrecer una experiencia más cómoda, conectada y profesional.</div>
+        </article>
+      </div>
+      <div class="pricing-assurance" aria-label="Ventajas de Sand Desk">
+        <span><i></i> Diseñado para negocios que quieren digitalizarse</span>
+        <span><i></i> Gestión clara desde un solo lugar</span>
+        <span><i></i> Acompañamiento y atención directa</span>
+      </div>
+    </section>
+    <section class="contact-section shell" id="contacto">
+      <div><h2>¿Hablamos de tu negocio?</h2><p>Solicita una demo y descubre cómo adaptar Sand Desk a tu forma de trabajar.</p></div>
+      <div class="contact-actions"><a href="demo.html" class="contact-demo">Abrir demo interactiva ↗</a><a href="mailto:kisakiofficial@proton.me">kisakiofficial@proton.me ↗</a></div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="shell footer-inner"><span class="footer-brand"><img src="assets/logo-mark.svg" alt="" />Sand <span class="brand-accent">Desk</span></span><span>© 2026 Sand Desk. Todos los derechos reservados.</span><span>Gestión inteligente para negocios.</span></div></footer>
+</div>
+<script src="js/ambient.js" defer></script>
+<script src="js/landing.js" defer></script><script src="js/landing-conversion.js" defer></script>
+</body>
+</html>

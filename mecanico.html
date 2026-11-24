@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050a12" />
+  <meta name="description" content="Sand Desk Garage: gestiona órdenes de trabajo, vehículos, clientes, recambios, citas y rentabilidad de tu taller mecánico desde un solo lugar." />
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" />
+  <title>Sand Desk — Gestión para talleres mecánicos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/expansion.css" />
+  <link rel="stylesheet" href="css/mechanic.css" />
+  <link rel="stylesheet" href="css/mechanic-landing.css" />
+  <link rel="stylesheet" href="css/landing-conversion.css" />
+</head>
+<body class="garage-page garage-landing">
+<div class="scene garage-scene">
+  <canvas class="stars" id="stars" data-ambient-stars aria-hidden="true"></canvas>
+  <div class="garage-comets" aria-hidden="true"></div>
+  <div class="planet-fallback" aria-hidden="true"></div>
+  <video class="planet-video" id="planetVideo" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+    <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/e859f229-8ebd-43fb-a5a0-58006ba75327.mp4" type="video/mp4" />
+  </video>
+
+  <header class="nav shell garage-nav-modern">
+    <a class="brand" href="index.html#inicio" aria-label="Volver al inicio de Sand Desk">
+      <img class="brand-symbol" src="assets/logo-mark.svg" alt="" />
+      <span class="brand-word">Sand <span class="brand-accent">Desk</span></span>
+    </a>
+    <nav class="nav-links" id="garage-navigation" aria-label="Navegación principal">
+      <a href="index.html#inicio">Inicio</a>
+      <a href="#funciones">Funciones</a>
+      <a href="#precios">Precios</a>
+      <a href="#contacto">Contacto</a>
+      <a class="nav-mobile-industry" href="moviles.html">Taller de móvil</a>
+      <a class="nav-mobile-industry" href="mecanico.html" aria-current="page">Taller mecánico</a>
+      <a class="nav-mobile-industry nav-mobile-demo" href="demo-mecanico.html">Ver demo mecánica ↗</a>
+    </nav>
+    <div class="nav-right">
+      <a class="industry-link" href="moviles.html">Taller de móvil</a>
+      <a class="industry-link" href="mecanico.html" aria-current="page">Taller mecánico</a>
+      <a class="nav-cta" href="demo-mecanico.html">Solicitar demo <span>↗</span></a>
+    </div>
+    <button class="menu-btn" type="button" aria-label="Abrir menú" aria-controls="garage-navigation" aria-expanded="false" data-menu-toggle>☰</button>
+  </header>
+
+  <main id="inicio" class="garage-landing-main">
+    <section class="hero shell garage-hero">
+      <div class="eyebrow"><span class="eyebrow-dot"></span> SAND DESK · AUTOMOCIÓN</div>
+      <h1>Tu taller mecánico,<br /><span class="gradient">en movimiento.</span></h1>
+      <p class="lede">Gestiona órdenes de trabajo, coches, furgonetas, clientes, recambios, citas y facturación desde una sola plataforma diseñada para el día a día de tu taller.</p>
+      <div class="hero-actions">
+        <a class="primary" href="demo-mecanico.html">Solicitar una demo <span>→</span></a>
+        <a class="secondary" href="#cristal">Explorar plataforma</a>
+      </div>
+    </section>
+
+    <section class="dashboard-wrap garage-glass-wrap" id="cristal" aria-label="Vista visual de Sand Desk para talleres mecánicos">
+      <div class="glass-orbit glass-orbit-one" aria-hidden="true"></div>
+      <div class="glass-orbit glass-orbit-two" aria-hidden="true"></div>
+      <div class="shard-scene" aria-label="Paneles de cristal con información del taller">
+        <div class="shard shard-nav">
+          <b>◈ Sand Desk Garage</b>
+          <span>Resumen　 Órdenes　 Vehículos　 Clientes　 Inventario</span>
+          <small>Admin · Administrador</small>
+        </div>
+        <div class="shard shard-a">
+          <small>INGRESOS DEL MES</small>
+          <strong data-count="18920" data-format="currency">18.920 €</strong>
+          <em>↗ 14,8%</em>
+          <div class="sparkline"></div>
+        </div>
+        <div class="shard shard-b">
+          <small>ÓRDENES ACTIVAS</small>
+          <strong data-count="32">32</strong>
+          <p>8 listas para entregar</p>
+        </div>
+        <div class="shard shard-c">
+          <small>VEHÍCULOS EN TALLER</small>
+          <strong data-count="14">14</strong>
+          <p>3 esperando recambios</p>
+        </div>
+        <div class="shard shard-d">
+          <small>ÓRDENES RECIENTES</small>
+          <p>◈ Seat León <i>En reparación</i></p>
+          <p>◈ Ford Transit <i>Esperando pieza</i></p>
+          <p>◈ Toyota Yaris <i>Listo para entrega</i></p>
+        </div>
+        <div class="shard shard-e">
+          <small>RENTABILIDAD SEMANAL</small>
+          <div class="garage-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="glass-caption"><span class="glass-caption-dot"></span> Una visión clara de cada operación, desde la recepción hasta la entrega</div>
+    </section>
+
+    <section class="garage-features-section shell" id="funciones">
+      <div class="section-heading garage-reveal">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> TODO CONECTADO</div>
+        <h2>Tu taller, <span class="gradient">bajo control.</span></h2>
+        <p>Menos tareas manuales y más visibilidad sobre los trabajos, los vehículos y la rentabilidad de tu negocio.</p>
+      </div>
+      <div class="capability-grid garage-capability-grid"><article class="capability-card wide" data-reveal>
+          <div class="capability-icon" aria-hidden="true">⌂</div><div class="capability-copy"><small>01 / ORGANIZACIÓN</small><h3>Sistema multi-sucursal y multi-taller</h3><p>Administra varias ubicaciones desde una sola cuenta. Cada taller conserva su actividad y stock, mientras tú tienes una visión consolidada del negocio.</p><div class="capability-tags"><span>Sucursales</span><span>Roles</span><span>Control centralizado</span></div></div>
+        </article><article class="capability-card" data-reveal>
+          <div class="capability-icon" aria-hidden="true">◇</div><div class="capability-copy"><small>02 / RECAMBIOS</small><h3>Inventario inteligente de piezas</h3><p>Controla referencias, existencias y movimientos de recambios. Consulta avisos de stock bajo y el coste de las piezas utilizadas en cada orden.</p><div class="capability-tags"><span>Stock</span><span>Alertas</span><span>Costes</span></div></div>
+        </article><article class="capability-card" data-reveal>
+          <div class="capability-icon" aria-hidden="true">▣</div><div class="capability-copy"><small>03 / VENTAS</small><h3>Presupuestos, POS y facturación</h3><p>Prepara presupuestos, registra mano de obra y piezas, cobra servicios y mantiene las operaciones documentadas desde el mismo panel.</p><div class="capability-tags"><span>Presupuestos</span><span>Cobros</span><span>Facturas</span></div></div>
+        </article><article class="capability-card wide" data-reveal>
+          <div class="capability-icon" aria-hidden="true">♙</div><div class="capability-copy"><small>04 / CRM</small><h3>CRM de clientes y vehículos</h3><p>Guarda matrículas, marcas, modelos, kilometraje e historial de intervenciones. Ten a mano los datos del cliente y cada vehículo que pasa por el taller.</p><div class="capability-tags"><span>Clientes</span><span>Vehículos</span><span>Historial</span></div></div>
+        </article><article class="capability-card full" data-reveal>
+          <div class="capability-icon" aria-hidden="true">▥</div><div class="capability-copy"><small>05 / ANALÍTICA</small><h3>Informes y rentabilidad del taller</h3><p>Visualiza ingresos, órdenes completadas, trabajos pendientes y evolución de la actividad para entender qué funciona y dónde mejorar.</p><div class="capability-tags"><span>Ingresos</span><span>Actividad</span><span>Rentabilidad</span></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="pricing-section shell garage-pricing" id="precios">
+      <div class="section-heading garage-reveal">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> PLANES Y PRECIOS</div>
+        <h2>Una gestión más inteligente.<br /><span class="gradient">A tu manera.</span></h2>
+        <p>Elige el nivel de herramientas que necesita tu taller para organizar operaciones, vehículos, clientes y resultados.</p>
+      </div>
+      <div class="pricing-grid">
+        <article class="price-card garage-reveal">
+          <div class="price-particles" aria-hidden="true">
+            <span class="ambient-glow"></span>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+            <span class="comet"></span><span class="comet second"></span><span class="comet third"></span>
+          </div>
+          <div class="price-top"><div class="price-name">Basic</div><div class="price-tag">Esencial</div></div>
+          <p class="price-desc">Las herramientas esenciales para tener las operaciones y la actividad diaria de tu taller organizadas.</p>
+          <div class="price-amount"><span class="old-price">279 €</span><div class="new-price">219<small> €</small></div></div>
+          <div class="price-caption">Precio especial de lanzamiento</div>
+          <div class="saving">Ahorras 60 €</div>
+          <a class="price-action" href="demo-mecanico.html?plan=Basic">Elegir Basic →</a>
+          <div class="feature-list-title">El plan incluye:</div>
+          <ul class="price-features">
+            <li><span class="price-check">✓</span><span><strong>Órdenes de trabajo:</strong> registra entradas, averías, tareas y estados de cada reparación.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Fichas de vehículos:</strong> matrícula, marca, modelo, kilometraje y datos relevantes.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Historial por cliente y vehículo:</strong> consulta intervenciones y trabajos anteriores.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Presupuestos y mano de obra:</strong> controla costes, horas y servicios realizados.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Inventario de recambios:</strong> gestiona existencias, entradas y salidas de piezas.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Facturas y tickets:</strong> registra los importes de los trabajos y las operaciones.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Dashboard de actividad:</strong> consulta ingresos, órdenes activas y evolución del taller.</span></li>
+          </ul>
+          <div class="price-divider"></div>
+          <div class="price-footnote">La opción ideal para digitalizar la operativa y controlar los trabajos del taller.</div>
+        </article>
+
+        <article class="price-card featured garage-reveal">
+          <div class="price-particles" aria-hidden="true">
+            <span class="ambient-glow"></span>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+            <span class="spark"></span><span class="spark"></span><span class="spark"></span><span class="spark"></span>
+            <span class="comet"></span><span class="comet second"></span><span class="comet third"></span>
+          </div>
+          <div class="price-top"><div class="price-name">Enhanced</div><div class="price-tag">Más completo</div></div>
+          <p class="price-desc">Añade comunicación con clientes, citas online y herramientas para coordinar mejor el trabajo del taller.</p>
+          <div class="price-amount"><div class="new-price">389<small> €</small></div></div>
+          <div class="price-caption">Precio del plan Enhanced</div>
+          <a class="price-action" href="demo-mecanico.html?plan=Enhanced">Elegir Enhanced →</a>
+          <div class="feature-list-title">Todo lo incluido en Basic, además de:</div>
+          <ul class="price-features">
+            <li><span class="price-check">✓</span><span><strong>Agenda centralizada:</strong> organiza citas, recepciones y entregas de vehículos.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Reserva online:</strong> permite que los clientes soliciten una cita desde la web.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Avisos de estado:</strong> informa al cliente cuando el vehículo pasa a otra fase del trabajo.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Aprobación de presupuestos:</strong> facilita la confirmación antes de iniciar una reparación.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Mensajes preparados:</strong> plantillas para avisos, presupuestos y vehículos listos para recoger.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Recordatorios de citas:</strong> ayuda a reducir olvidos y ausencias.</span></li>
+            <li><span class="price-check">✓</span><span><strong>Coordinación del equipo:</strong> organiza las tareas y la carga de trabajo del taller.</span></li>
+          </ul>
+          <div class="price-divider"></div>
+          <div class="price-footnote">Pensado para talleres que quieren ofrecer una experiencia más cómoda y conectada.</div>
+        </article>
+      </div>
+      <div class="pricing-assurance" aria-label="Ventajas de Sand Desk">
+        <span><i></i> Diseñado para talleres mecánicos</span>
+        <span><i></i> Coches y furgonetas en un solo lugar</span>
+        <span><i></i> Acompañamiento y atención directa</span>
+      </div>
+    </section>
+
+    <section class="contact-section shell garage-contact garage-reveal" id="contacto">
+      <div>
+        <h2>¿Listo para poner tu taller en marcha?</h2>
+        <p>Solicita una demo y descubre cómo adaptar Sand Desk a la forma de trabajar de tu taller.</p>
+      </div>
+      <div class="contact-actions">
+        <a href="demo-mecanico.html" class="contact-demo">Abrir demo mecánica ↗</a>
+        <a href="mailto:kisakiofficial@proton.me">kisakiofficial@proton.me ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer garage-footer">
+    <div class="shell footer-inner">
+      <span class="footer-brand"><img src="assets/logo-mark.svg" alt="" />Sand <span class="brand-accent">Desk</span></span>
+      <span>© 2026 Sand Desk. Todos los derechos reservados.</span>
+      <span>Gestión inteligente para talleres mecánicos.</span>
+    </div>
+  </footer>
+</div>
+<script src="js/ambient.js" defer></script>
+<script src="js/mechanic-landing.js" defer></script>
+<script src="js/landing-conversion.js" defer></script>
+<script type="module" src="js/garage-scene.js"></script>
+</body>
+</html>
